@@ -3,7 +3,6 @@
 import { User } from './user.model';
 import AppError from '../../error/appError';
 import httpStatus from 'http-status';
-import { INormalUser } from '../normalUser/normalUser.interface';
 import mongoose from 'mongoose';
 import { USER_ROLE } from './user.constant';
 import NormalUser from '../normalUser/normalUser.model';
@@ -14,46 +13,73 @@ import SuperAdmin from '../superAdmin/superAdmin.model';
 //TODO: ata kono todo na mojar baper hossa akana thaka jdoi aii 2 ta line remove kora dai tahola multer-s3 kaj korba nah
 import dotenv from 'dotenv';
 import Admin from '../admin/admin.model';
+import { IStore } from '../store/store.interface';
+import { TUser } from './user.interface';
+import sendEmail from '../../utilities/sendEmail';
+import registrationSuccessEmailBody from '../../mailTemplate/registerSucessEmail';
 dotenv.config();
+const generateVerifyCode = (): number => {
+    return Math.floor(10000 + Math.random() * 900000);
+};
 
-const registerUser = async (userId: string, payload: INormalUser) => {
-    if (payload.checkInDate && payload.checkOutDate) {
-        if (new Date(payload.checkOutDate) <= new Date(payload.checkInDate)) {
-            throw new AppError(
-                httpStatus.BAD_REQUEST,
-                'checkOutDate must be greater than checkInDate'
-            );
-        }
+const registerStore = async (
+    payload: IStore & { password: string; confirmPassword: string }
+) => {
+    const { password, confirmPassword, ...userData } = payload;
+    if (password !== confirmPassword) {
+        throw new AppError(
+            httpStatus.BAD_REQUEST,
+            "Password and confirm password doesn't match"
+        );
+    }
+
+    const emailExist = await User.findOne({ email: userData.email });
+    if (emailExist) {
+        throw new AppError(httpStatus.BAD_REQUEST, 'This email already exist');
     }
     const session = await mongoose.startSession();
     session.startTransaction();
+
     try {
-        const result = await NormalUser.findByIdAndUpdate(
-            userId,
-            { ...payload, isRegistrationCompleted: true },
-            {
-                new: true,
-                runValidators: true,
-                session,
-            }
-        );
-        if (!result) {
-            throw new AppError(
-                httpStatus.SERVICE_UNAVAILABLE,
-                'Failed to registartion , please try again letter'
-            );
-        }
+        const verifyCode = generateVerifyCode();
+        const userDataPayload: Partial<TUser> = {
+            email: userData?.email,
+            password: password,
+            role: USER_ROLE.user,
+            verifyCode,
+            codeExpireIn: new Date(Date.now() + 5 * 60000),
+        };
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const user = await User.create([userDataPayload], { session });
+
+        const storePayload = {
+            ...userData,
+            user: user[0]._id,
+        };
+        const result = await NormalUser.create([storePayload], {
+            session,
+        });
 
         await User.findByIdAndUpdate(
-            result.user,
-            { isRegistrationCompleted: true },
+            user[0]._id,
+            { profileId: result[0]._id },
             { session }
         );
+
+        sendEmail({
+            email: userData.email,
+            subject: 'Activate Your Account',
+            html: registrationSuccessEmailBody(
+                result[0].name,
+                user[0].verifyCode
+            ),
+        });
 
         await session.commitTransaction();
         session.endSession();
 
-        return result;
+        return result[0];
     } catch (error) {
         await session.abortTransaction();
         session.endSession();
@@ -140,7 +166,7 @@ const changeUserStatus = async (id: string) => {
 };
 
 const userServices = {
-    registerUser,
+    registerStore,
     getMyProfile,
     changeUserStatus,
     deleteUserAccount,

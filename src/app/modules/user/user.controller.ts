@@ -5,7 +5,7 @@ import sendResponse from '../../utilities/sendResponse';
 import userServices from './user.services';
 import { getCloudFrontUrl } from '../../helper/mutler-s3-uploader';
 
-const registerUser = catchAsync(async (req, res) => {
+const registerStore = catchAsync(async (req, res) => {
     if (req.files?.pictures) {
         req.body.pictures = req.files.pictures.map((file: any) => {
             return getCloudFrontUrl(file.key);
@@ -15,14 +15,12 @@ const registerUser = catchAsync(async (req, res) => {
     if (req.files?.profile_image) {
         req.body.profile_image = getCloudFrontUrl(file[0].key);
     }
-    const result = await userServices.registerUser(
-        req.user.profileId,
-        req.body
-    );
+    const result = await userServices.registerStore(req.body);
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: 'Your registration is successfully completed',
+        message:
+            'Your registration is successfully completed, plase check your email for verify your account',
         data: result,
     });
 });
@@ -65,7 +63,7 @@ const deleteUserAccount = catchAsync(async (req, res) => {
 });
 
 const userController = {
-    registerUser,
+    registerStore,
     getMyProfile,
     changeUserStatus,
     deleteUserAccount,
