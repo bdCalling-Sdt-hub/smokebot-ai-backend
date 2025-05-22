@@ -50,6 +50,18 @@ const getMyProducts = catchAsync(async (req, res) => {
         data: result,
     });
 });
+const getSpecificStoreProduct = catchAsync(async (req, res) => {
+    const result = await productService.getSpecificStoreProduct(
+        req.params.id,
+        req.query
+    );
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: 'Products retrieved successfully',
+        data: result,
+    });
+});
 
 const getSingleProduct = catchAsync(async (req, res) => {
     const result = await productService.getSingleProduct(req.params.id);
@@ -80,6 +92,7 @@ const productController = {
     getSingleProduct,
     deleteProduct,
     getMyProducts,
+    getSpecificStoreProduct,
 };
 
 export default productController;

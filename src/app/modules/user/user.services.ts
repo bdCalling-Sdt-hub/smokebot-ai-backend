@@ -45,7 +45,7 @@ const registerStore = async (
         const userDataPayload: Partial<TUser> = {
             email: userData?.email,
             password: password,
-            role: USER_ROLE.user,
+            role: USER_ROLE.storeOwner,
             verifyCode,
             codeExpireIn: new Date(Date.now() + 5 * 60000),
         };

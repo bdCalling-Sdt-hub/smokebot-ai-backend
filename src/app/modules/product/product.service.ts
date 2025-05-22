@@ -62,6 +62,26 @@ const getMyProduct = async (
         result,
     };
 };
+const getSpecificStoreProduct = async (
+    storeId: string,
+    query: Record<string, unknown>
+) => {
+    const productQuery = new QueryBuilder(
+        Product.find({ store: storeId }).populate({ path: 'store' }),
+        query
+    )
+        .search(['name'])
+        .fields()
+        .filter()
+        .paginate()
+        .sort();
+    const result = await productQuery.modelQuery;
+    const meta = await productQuery.countTotal();
+    return {
+        meta,
+        result,
+    };
+};
 
 const getSingleProduct = async (id: string) => {
     return await Product.findById(id).populate('store');
@@ -81,6 +101,7 @@ const productService = {
     getSingleProduct,
     getMyProduct,
     deleteProduct,
+    getSpecificStoreProduct,
 };
 
 export default productService;

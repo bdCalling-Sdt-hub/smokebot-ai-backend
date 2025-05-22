@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.patch(
     '/update-store',
-    auth(USER_ROLE.user),
+    auth(USER_ROLE.storeOwner),
     uploadFile(),
     (req, res, next) => {
         if (req.body.data) {
