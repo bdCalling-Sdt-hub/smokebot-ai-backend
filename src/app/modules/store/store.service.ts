@@ -39,5 +39,10 @@ const getAllStore = async (query: Record<string, unknown>) => {
     };
 };
 
-const StoreServices = { updateStoreProfile, getAllStore };
+const getSingleStore = async (id: string) => {
+    const result = await Store.findById(id);
+    return result;
+};
+
+const StoreServices = { updateStoreProfile, getAllStore, getSingleStore };
 export default StoreServices;

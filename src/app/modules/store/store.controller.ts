@@ -24,6 +24,15 @@ const getAllStore = catchAsync(async (req, res) => {
         data: result,
     });
 });
+const getSingleStore = catchAsync(async (req, res) => {
+    const result = await storeServices.getSingleStore(req.params.id);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Store retrieved successfully',
+        data: result,
+    });
+});
 
-const StoreController = { updateStoreProfile, getAllStore };
+const StoreController = { updateStoreProfile, getAllStore, getSingleStore };
 export default StoreController;

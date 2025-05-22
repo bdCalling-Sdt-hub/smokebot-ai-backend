@@ -26,5 +26,10 @@ router.get(
     auth(USER_ROLE.superAdmin),
     storeController.getAllStore
 );
+router.get(
+    '/single-store',
+    auth(USER_ROLE.superAdmin),
+    storeController.getSingleStore
+);
 
 export const storeRoutes = router;
