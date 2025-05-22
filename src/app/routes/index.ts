@@ -8,6 +8,7 @@ import { metaRoutes } from '../modules/meta/meta.routes';
 import { AdminRoutes } from '../modules/admin/admin.routes';
 import { superAdminRoutes } from '../modules/superAdmin/superAdmin.routes';
 import { subscriptionRoutes } from '../modules/subscription/subscription.routes';
+import { storeRoutes } from '../modules/store/store.routes';
 
 const router = Router();
 
@@ -51,6 +52,10 @@ const moduleRoutes = [
     {
         path: '/subscription',
         router: subscriptionRoutes,
+    },
+    {
+        path: '/store',
+        router: storeRoutes,
     },
 ];
 

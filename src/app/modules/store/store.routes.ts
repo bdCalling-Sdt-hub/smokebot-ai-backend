@@ -21,5 +21,10 @@ router.patch(
     validateRequest(storeValidations.updateStoreData),
     storeController.updateStoreProfile
 );
+router.get(
+    '/all-store',
+    auth(USER_ROLE.superAdmin),
+    storeController.getAllStore
+);
 
 export const storeRoutes = router;

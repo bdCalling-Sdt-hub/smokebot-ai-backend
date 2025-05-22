@@ -12,5 +12,5 @@ const storeSchema = new Schema<IStore>(
     { timestamps: true }
 );
 
-const storeModel = model<IStore>('Store', storeSchema);
-export default storeModel;
+const Store = model<IStore>('Store', storeSchema);
+export default Store;
