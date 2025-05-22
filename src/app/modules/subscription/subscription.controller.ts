@@ -1,24 +1,31 @@
-import httpStatus from "http-status";
-import catchAsync from "../../utilities/catchasync";
-import sendResponse from "../../utilities/sendResponse";
-import subscriptionServices from "./subscription.service";
+import catchAsync from '../../utilities/catchasync';
+import sendResponse from '../../utilities/sendResponse';
+import subscriptionService from './subscription.service';
 
-const updateUserProfile = catchAsync(async (req, res) => {
-    const { files } = req;
-    if (files && typeof files === "object" && "profile_image" in files) {
-        req.body.profile_image = files["profile_image"][0].path;
-    }
-    const result = await subscriptionServices.updateUserProfile(
-        req.user.profileId,
-        req.body
-    );
+const createSubscription = catchAsync(async (req, res) => {
+    const result = await subscriptionService.createSubscription(req.body);
     sendResponse(res, {
-        statusCode: httpStatus.OK,
+        statusCode: 201,
         success: true,
-        message: "Profile updated successfully",
+        message: 'Subscription created successfully',
         data: result,
     });
 });
 
-const SubscriptionController = { updateUserProfile };
-export default SubscriptionController;
+const updateSubscription = catchAsync(async (req, res) => {
+    const { id } = req.params;
+    const result = await subscriptionService.updateSubscription(id, req.body);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: 'Subscription updated successfully',
+        data: result,
+    });
+});
+
+const subscriptionController = {
+    createSubscription,
+    updateSubscription,
+};
+
+export default subscriptionController;

@@ -1,25 +1,20 @@
-import express from "express";
-import auth from "../../middlewares/auth";
-import { USER_ROLE } from "../user/user.constant";
-import validateRequest from "../../middlewares/validateRequest";
-import subscriptionValidations from "./subscription.validation";
-import subscriptionController from "./subscription.controller";
-import { uploadFile } from "../../helper/fileUploader";
+import express from 'express';
+import auth from '../../middlewares/auth';
+import { USER_ROLE } from '../user/user.constant';
+import subscriptionController from './subscription.controller';
 
 const router = express.Router();
 
+router.post(
+    '/create',
+    auth(USER_ROLE.superAdmin),
+    subscriptionController.createSubscription
+);
+
 router.patch(
-    "/update-profile",
-    auth(USER_ROLE.user),
-    uploadFile(),
-    (req, res, next) => {
-        if (req.body.data) {
-            req.body = JSON.parse(req.body.data);
-        }
-        next();
-    },
-    validateRequest(subscriptionValidations.updateSubscriptionData),
-    subscriptionController.updateUserProfile
+    '/update/:id',
+    auth(USER_ROLE.superAdmin),
+    subscriptionController.updateSubscription
 );
 
 export const subscriptionRoutes = router;

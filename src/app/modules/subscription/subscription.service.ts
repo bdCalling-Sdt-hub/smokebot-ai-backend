@@ -1,21 +1,32 @@
-import httpStatus from "http-status";
-import AppError from "../../error/appError";
-import { ISubscription } from "./subscription.interface";
-import subscriptionModel from "./subscription.model";
+import httpStatus from 'http-status';
+import AppError from '../../error/appError';
+import { ISubscription } from './subscription.interface';
+import { Subscription } from './subscription.model';
 
-const updateUserProfile = async (id: string, payload: Partial<ISubscription>) => {
-    if (payload.email || payload.username) {
-        throw new AppError(httpStatus.BAD_REQUEST, "You cannot change the email or username");
-    }
-    const user = await subscriptionModel.findById(id);
-    if (!user) {
-        throw new AppError(httpStatus.NOT_FOUND, "Profile not found");
-    }
-    return await subscriptionModel.findByIdAndUpdate(id, payload, {
+const createSubscription = async (payload: ISubscription) => {
+    const created = await Subscription.create(payload);
+    return created;
+};
+
+const updateSubscription = async (
+    id: string,
+    payload: Partial<ISubscription>
+) => {
+    const updated = await Subscription.findByIdAndUpdate(id, payload, {
         new: true,
         runValidators: true,
     });
+
+    if (!updated) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Subscription not found');
+    }
+
+    return updated;
 };
 
-const SubscriptionServices = { updateUserProfile };
-export default SubscriptionServices;
+const subscriptionService = {
+    createSubscription,
+    updateSubscription,
+};
+
+export default subscriptionService;
