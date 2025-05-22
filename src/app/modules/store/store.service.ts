@@ -26,13 +26,13 @@ const getAllStore = async (query: Record<string, unknown>) => {
         Store.find().populate({ path: 'store', select: 'isBlocked' }),
         query
     )
-        .search(['storeName'])
+        .search(['name'])
         .fields()
         .filter()
         .paginate()
         .sort();
     const result = await storeQuery.modelQuery;
-    const meta = await storeQuery.countTotal;
+    const meta = await storeQuery.countTotal();
     return {
         meta,
         result,
