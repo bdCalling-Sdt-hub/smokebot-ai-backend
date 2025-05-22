@@ -66,6 +66,13 @@ const getMyProduct = async (
 const getSingleProduct = async (id: string) => {
     return await Product.findById(id).populate('store');
 };
+const deleteProduct = async (storeId: string, id: string) => {
+    const product = Product.findOne({ store: storeId, _id: id });
+    if (!product) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Product not found');
+    }
+    return await Product.findByIdAndDelete(id);
+};
 
 const productService = {
     createProduct,
@@ -73,6 +80,7 @@ const productService = {
     getAllProducts,
     getSingleProduct,
     getMyProduct,
+    deleteProduct,
 };
 
 export default productService;
