@@ -1,15 +1,15 @@
-import express from "express";
-import auth from "../../middlewares/auth";
-import { USER_ROLE } from "../user/user.constant";
-import validateRequest from "../../middlewares/validateRequest";
-import storeValidations from "./store.validation";
-import storeController from "./store.controller";
-import { uploadFile } from "../../helper/fileUploader";
+import express from 'express';
+import auth from '../../middlewares/auth';
+import { USER_ROLE } from '../user/user.constant';
+import validateRequest from '../../middlewares/validateRequest';
+import storeValidations from './store.validation';
+import storeController from './store.controller';
+import { uploadFile } from '../../helper/fileUploader';
 
 const router = express.Router();
 
 router.patch(
-    "/update-profile",
+    '/update-store',
     auth(USER_ROLE.user),
     uploadFile(),
     (req, res, next) => {
@@ -19,7 +19,7 @@ router.patch(
         next();
     },
     validateRequest(storeValidations.updateStoreData),
-    storeController.updateUserProfile
+    storeController.updateStoreProfile
 );
 
 export const storeRoutes = router;
