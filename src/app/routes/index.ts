@@ -9,6 +9,8 @@ import { AdminRoutes } from '../modules/admin/admin.routes';
 import { superAdminRoutes } from '../modules/superAdmin/superAdmin.routes';
 import { subscriptionRoutes } from '../modules/subscription/subscription.routes';
 import { storeRoutes } from '../modules/store/store.routes';
+import { categoryRoutes } from '../modules/category/category.routes';
+import { productRoutes } from '../modules/product/product.routes';
 
 const router = Router();
 
@@ -56,6 +58,14 @@ const moduleRoutes = [
     {
         path: '/store',
         router: storeRoutes,
+    },
+    {
+        path: '/category',
+        router: categoryRoutes,
+    },
+    {
+        path: '/product',
+        router: productRoutes,
     },
 ];
 

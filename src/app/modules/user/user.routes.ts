@@ -2,30 +2,16 @@ import validateRequest from '../../middlewares/validateRequest';
 import userControllers from './user.controller';
 import { Router } from 'express';
 import userValidations from './user.validation';
-import normalUserValidations from '../normalUser/normalUser.validation';
 import auth from '../../middlewares/auth';
 import { USER_ROLE } from './user.constant';
-import { Request, Response, NextFunction } from 'express';
-import { uploadFile } from '../../helper/mutler-s3-uploader';
+import StoreValidations from '../store/store.validation';
 
 const router = Router();
 
 router.post(
-    '/register-user',
-    auth(USER_ROLE.user),
-    uploadFile(),
-    (req: Request, res: Response, next: NextFunction) => {
-        req.body = JSON.parse(req.body.data);
-        next();
-    },
-    validateRequest(normalUserValidations.registerNormalUserValidationSchema),
-    userControllers.registerUser
-);
-
-router.get(
-    '/get-my-profile',
-    auth(USER_ROLE.user, USER_ROLE.admin, USER_ROLE.superAdmin),
-    userControllers.getMyProfile
+    '/register-store',
+    validateRequest(StoreValidations.registerStoreValidationSchema),
+    userControllers.registerStore
 );
 
 router.patch(
@@ -43,10 +29,26 @@ router.delete(
 
 router.get(
     '/get-my-profile',
-    auth(USER_ROLE.user, USER_ROLE.superAdmin),
+    auth(USER_ROLE.storeOwner),
     userControllers.getMyProfile
 );
+router.post(
+    '/verify-code',
+    validateRequest(userValidations.verifyCodeValidationSchema),
+    userControllers.verifyCode
+);
 
+router.post(
+    '/resend-verify-code',
+    validateRequest(userValidations.resendVerifyCodeSchema),
+    userControllers.resendVerifyCode
+);
 
+router.patch(
+    '/update-profile',
+    auth(USER_ROLE.superAdmin, USER_ROLE.storeOwner),
+    validateRequest(userValidations.updateUserValidationSchema),
+    userControllers.updateProfile
+);
 
 export const userRoutes = router;

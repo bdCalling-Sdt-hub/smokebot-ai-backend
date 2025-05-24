@@ -38,6 +38,28 @@ const getMyProfile = catchAsync(async (req, res) => {
         data: result,
     });
 });
+
+const verifyCode = catchAsync(async (req, res) => {
+    const result = await userServices.verifyCode(
+        req?.body?.email,
+        req?.body?.verifyCode
+    );
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Successfully verified your account with email',
+        data: result,
+    });
+});
+const resendVerifyCode = catchAsync(async (req, res) => {
+    const result = await userServices.resendVerifyCode(req?.body?.email);
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Verify code send to your email inbox',
+        data: result,
+    });
+});
 const changeUserStatus = catchAsync(async (req, res) => {
     const result = await userServices.changeUserStatus(req.params.id);
 
@@ -61,11 +83,24 @@ const deleteUserAccount = catchAsync(async (req, res) => {
         data: result,
     });
 });
+const updateProfile = catchAsync(async (req, res) => {
+    const result = await userServices.updateProfile(req.user, req.body);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: `Profile updated successfully`,
+        data: result,
+    });
+});
 
 const userController = {
     registerStore,
     getMyProfile,
     changeUserStatus,
     deleteUserAccount,
+    verifyCode,
+    updateProfile,
+    resendVerifyCode,
 };
 export default userController;

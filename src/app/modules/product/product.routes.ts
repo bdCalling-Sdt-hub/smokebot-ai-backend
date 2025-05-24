@@ -30,13 +30,13 @@ router.get(
 );
 router.get(
     '/get-store-product/:id',
-    auth(USER_ROLE.storeOwner, USER_ROLE.superAdmin, USER_ROLE.user),
+    // auth(USER_ROLE.storeOwner, USER_ROLE.superAdmin, USER_ROLE.user),
     productController.getSpecificStoreProduct
 );
 
 router.get(
     '/get-single/:id',
-    auth(USER_ROLE.superAdmin, USER_ROLE.user, USER_ROLE.storeOwner),
+    // auth(USER_ROLE.superAdmin, USER_ROLE.user, USER_ROLE.storeOwner),
     productController.getSingleProduct
 );
 router.delete(

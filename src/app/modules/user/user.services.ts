@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-unused-vars */
 
 import { User } from './user.model';
@@ -14,9 +15,12 @@ import SuperAdmin from '../superAdmin/superAdmin.model';
 import dotenv from 'dotenv';
 import Admin from '../admin/admin.model';
 import { IStore } from '../store/store.interface';
-import { TUser } from './user.interface';
+import { TUser, TUserRole } from './user.interface';
 import sendEmail from '../../utilities/sendEmail';
 import registrationSuccessEmailBody from '../../mailTemplate/registerSucessEmail';
+import Store from '../store/store.model';
+import { createToken } from './user.utils';
+import config from '../../config';
 dotenv.config();
 const generateVerifyCode = (): number => {
     return Math.floor(10000 + Math.random() * 900000);
@@ -57,7 +61,7 @@ const registerStore = async (
             ...userData,
             user: user[0]._id,
         };
-        const result = await NormalUser.create([storePayload], {
+        const result = await Store.create([storePayload], {
             session,
         });
 
@@ -87,6 +91,83 @@ const registerStore = async (
     }
 };
 
+const verifyCode = async (email: string, verifyCode: number) => {
+    const user = await User.findOne({ email: email });
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+    }
+    if (user.codeExpireIn < new Date(Date.now())) {
+        throw new AppError(httpStatus.BAD_REQUEST, 'Verify code is expired');
+    }
+    if (verifyCode !== user.verifyCode) {
+        throw new AppError(httpStatus.BAD_REQUEST, "Code doesn't match");
+    }
+    const result = await User.findOneAndUpdate(
+        { email: email },
+        { isVerified: true },
+        { new: true, runValidators: true }
+    );
+
+    if (!result) {
+        throw new AppError(
+            httpStatus.SERVICE_UNAVAILABLE,
+            'Server temporary unable please try again letter'
+        );
+    }
+
+    // Create JWT tokens
+    const jwtPayload = {
+        id: result?._id,
+        profileId: result?.profileId,
+        email: result?.email,
+        role: result?.role as TUserRole,
+    };
+
+    const accessToken = createToken(
+        jwtPayload,
+        config.jwt_access_secret as string,
+        config.jwt_access_expires_in as string
+    );
+    const refreshToken = createToken(
+        jwtPayload,
+        config.jwt_refresh_secret as string,
+        config.jwt_refresh_expires_in as string
+    );
+
+    return {
+        accessToken,
+        refreshToken,
+    };
+};
+
+const resendVerifyCode = async (email: string) => {
+    const user = await User.findOne({ email: email });
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+    }
+    const verifyCode = generateVerifyCode();
+    const updateUser = await User.findOneAndUpdate(
+        { email: email },
+        {
+            verifyCode: verifyCode,
+            codeExpireIn: new Date(Date.now() + 5 * 60000),
+        },
+        { new: true, runValidators: true }
+    );
+    if (!updateUser) {
+        throw new AppError(
+            httpStatus.INTERNAL_SERVER_ERROR,
+            'Something went wrong . Please again resend the code after a few second'
+        );
+    }
+    sendEmail({
+        email: user.email,
+        subject: 'Activate Your Account',
+        html: registrationSuccessEmailBody('Dear', updateUser.verifyCode),
+    });
+    return null;
+};
+
 const deleteUserAccount = async (user: JwtPayload, password: string) => {
     const userData = await User.findById(user.id);
 
@@ -111,6 +192,8 @@ const getMyProfile = async (userData: JwtPayload) => {
         result = await SuperAdmin.findById(userData.profileId);
     } else if (userData.role === USER_ROLE.admin) {
         result = await Admin.findById(userData.profileId);
+    } else if (userData.role == USER_ROLE.storeOwner) {
+        result = await Store.findById(userData.profileId);
     }
     return result;
 };
@@ -165,11 +248,35 @@ const changeUserStatus = async (id: string) => {
     return result;
 };
 
+// update profile
+const updateProfile = async (userData: JwtPayload, payload: any) => {
+    if (userData.role == USER_ROLE.superAdmin) {
+        const result = await SuperAdmin.findByIdAndUpdate(
+            userData.profileId,
+            payload,
+            { new: true, runValidators: true }
+        );
+        return result;
+    } else if (userData.role == USER_ROLE.storeOwner) {
+        const result = await Store.findByIdAndUpdate(
+            userData.profileId,
+            payload,
+            { new: true, runValidators: true }
+        );
+        return result;
+    } else {
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+    }
+};
+
 const userServices = {
     registerStore,
     getMyProfile,
     changeUserStatus,
     deleteUserAccount,
+    verifyCode,
+    resendVerifyCode,
+    updateProfile,
 };
 
 export default userServices;

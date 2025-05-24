@@ -3,8 +3,16 @@ import AppError from '../../error/appError';
 import { IProduct } from './product.interface';
 import { Product } from './product.model';
 import QueryBuilder from '../../builder/QueryBuilder';
+import Category from '../category/category.model';
 
 const createProduct = async (storeId: string, payload: IProduct) => {
+    const data = await Category.findOne();
+    if (!data?.categories.includes(payload.category)) {
+        throw new AppError(
+            httpStatus.BAD_REQUEST,
+            'Category not found , please select valid category'
+        );
+    }
     const created = await Product.create({ ...payload, store: storeId });
     return created;
 };
@@ -18,6 +26,17 @@ const updateProduct = async (
     if (!product) {
         throw new AppError(httpStatus.NOT_FOUND, 'Product not found');
     }
+
+    if (payload.category) {
+        const data = await Category.findOne();
+        if (!data?.categories.includes(payload.category)) {
+            throw new AppError(
+                httpStatus.BAD_REQUEST,
+                'Category not found , please select valid category'
+            );
+        }
+    }
+
     const updated = await Product.findByIdAndUpdate(id, payload, {
         new: true,
         runValidators: true,
@@ -26,10 +45,7 @@ const updateProduct = async (
 };
 
 const getAllProducts = async (query: Record<string, unknown>) => {
-    const productQuery = new QueryBuilder(
-        Product.find().populate({ path: 'store' }),
-        query
-    )
+    const productQuery = new QueryBuilder(Product.find(), query)
         .search(['name'])
         .fields()
         .filter()
@@ -47,7 +63,7 @@ const getMyProduct = async (
     query: Record<string, unknown>
 ) => {
     const productQuery = new QueryBuilder(
-        Product.find({ store: storeId }).populate({ path: 'store' }),
+        Product.find({ store: storeId }),
         query
     )
         .search(['name'])
