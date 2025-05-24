@@ -39,6 +39,7 @@ router.get(
     // auth(USER_ROLE.superAdmin, USER_ROLE.user, USER_ROLE.storeOwner),
     productController.getSingleProduct
 );
+//
 router.delete(
     '/delete/:id',
     auth(USER_ROLE.superAdmin, USER_ROLE.storeOwner),
