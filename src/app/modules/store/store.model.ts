@@ -8,6 +8,15 @@ const storeSchema = new Schema<IStore>(
         phone: { type: String },
         email: { type: String, required: true },
         address: { type: String },
+        subscriptionPurchaseDate: {
+            type: Date,
+        },
+        subscriptionRenewDate: {
+            type: Date,
+        },
+        subscriptionExpiryDate: {
+            type: Date,
+        },
     },
     { timestamps: true }
 );

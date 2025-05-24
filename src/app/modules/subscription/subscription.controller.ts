@@ -1,31 +1,22 @@
+import httpStatus from 'http-status';
 import catchAsync from '../../utilities/catchasync';
 import sendResponse from '../../utilities/sendResponse';
-import subscriptionService from './subscription.service';
+import SubscriptionService from './subscription.service';
 
-const createSubscription = catchAsync(async (req, res) => {
-    const result = await subscriptionService.createSubscription(req.body);
-    sendResponse(res, {
-        statusCode: 201,
-        success: true,
-        message: 'Subscription created successfully',
-        data: result,
-    });
+const purchaseSubscription = catchAsync(async (req, res) => {
+  const result = await SubscriptionService.purchaseSubscription(
+    req.user.profileId,
+  );
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Subscription purchase successfully',
+    data: result,
+  });
 });
 
-const updateSubscription = catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const result = await subscriptionService.updateSubscription(id, req.body);
-    sendResponse(res, {
-        statusCode: 200,
-        success: true,
-        message: 'Subscription updated successfully',
-        data: result,
-    });
-});
-
-const subscriptionController = {
-    createSubscription,
-    updateSubscription,
+const SubscriptionController = {
+  purchaseSubscription,
 };
 
-export default subscriptionController;
+export default SubscriptionController;

@@ -12,6 +12,11 @@ import notFound from './app/middlewares/notFound';
 const app: Application = express();
 import sendContactUsEmail from './app/helper/sendContactUsEmail';
 import dotenv from 'dotenv';
+import { USER_ROLE } from './app/modules/user/user.constant';
+import auth from './app/middlewares/auth';
+import uploadCsvFile, { stopCsvUpload } from './app/helper/uploadCsv';
+import multer from 'multer';
+const upload = multer({ dest: 'uploads/' });
 dotenv.config();
 
 // parser
@@ -40,7 +45,13 @@ app.use('/uploads', express.static('uploads'));
 // application routers ----------------
 app.use('/', router);
 app.post('/contact-us', sendContactUsEmail);
-
+app.post(
+    '/upload-csv',
+    auth(USER_ROLE.storeOwner),
+    upload.single('file'),
+    uploadCsvFile
+);
+app.post('/stop-csv-upload', stopCsvUpload);
 app.get('/', async (req, res) => {
     res.send({ message: 'Welcome to dance club server' });
 });

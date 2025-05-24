@@ -6,4 +6,7 @@ export interface IStore {
     phone?: string;
     email: string;
     address?: string;
+    subscriptionPurchaseDate?: Date;
+    subscriptionRenewDate?: Date;
+    subscriptionExpiryDate?: Date;
 }

@@ -7,10 +7,11 @@ import { notificationRoutes } from '../modules/notification/notification.routes'
 import { metaRoutes } from '../modules/meta/meta.routes';
 import { AdminRoutes } from '../modules/admin/admin.routes';
 import { superAdminRoutes } from '../modules/superAdmin/superAdmin.routes';
-import { subscriptionRoutes } from '../modules/subscription/subscription.routes';
+// import { subscriptionRoutes } from '../modules/subscription/subscription.routes';
 import { storeRoutes } from '../modules/store/store.routes';
 import { categoryRoutes } from '../modules/category/category.routes';
 import { productRoutes } from '../modules/product/product.routes';
+import { subscriptionRoutes } from '../modules/subscription/subscription.routes';
 
 const router = Router();
 
@@ -51,10 +52,10 @@ const moduleRoutes = [
         path: '/super-admin',
         router: superAdminRoutes,
     },
-    {
-        path: '/subscription',
-        router: subscriptionRoutes,
-    },
+    // {
+    //     path: '/subscription',
+    //     router: subscriptionRoutes,
+    // },
     {
         path: '/store',
         router: storeRoutes,
@@ -66,6 +67,10 @@ const moduleRoutes = [
     {
         path: '/product',
         router: productRoutes,
+    },
+    {
+        path: '/subscription',
+        router: subscriptionRoutes,
     },
 ];
 

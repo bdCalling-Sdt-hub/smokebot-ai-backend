@@ -1,20 +1,13 @@
 import express from 'express';
 import auth from '../../middlewares/auth';
 import { USER_ROLE } from '../user/user.constant';
-import subscriptionController from './subscription.controller';
+import SubscriptionController from './subscription.controller';
 
 const router = express.Router();
-
 router.post(
-    '/create',
-    auth(USER_ROLE.superAdmin),
-    subscriptionController.createSubscription
-);
-
-router.patch(
-    '/update/:id',
-    auth(USER_ROLE.superAdmin),
-    subscriptionController.updateSubscription
+  '/purchase-subscription',
+  auth(USER_ROLE.user),
+  SubscriptionController.purchaseSubscription,
 );
 
 export const subscriptionRoutes = router;
