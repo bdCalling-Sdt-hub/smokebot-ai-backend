@@ -98,9 +98,9 @@ const getSpecificStoreProduct = async (
         result,
     };
 };
-
+//
 const getSingleProduct = async (id: string) => {
-    return await Product.findById(id).populate('store');
+    return await Product.findById(id);
 };
 const deleteProduct = async (storeId: string, id: string) => {
     const product = Product.findOne({ store: storeId, _id: id });
