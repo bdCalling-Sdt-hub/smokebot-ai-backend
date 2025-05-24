@@ -27,7 +27,7 @@ router.get(
     storeController.getAllStore
 );
 router.get(
-    '/single-store',
+    '/single-store/:id',
     auth(USER_ROLE.superAdmin),
     storeController.getSingleStore
 );

@@ -23,7 +23,7 @@ const updateStoreProfile = async (id: string, payload: Partial<IStore>) => {
 
 const getAllStore = async (query: Record<string, unknown>) => {
     const storeQuery = new QueryBuilder(
-        Store.find().populate({ path: 'store', select: 'isBlocked' }),
+        Store.find().populate({ path: 'user', select: 'isBlocked' }),
         query
     )
         .search(['name'])
@@ -40,7 +40,10 @@ const getAllStore = async (query: Record<string, unknown>) => {
 };
 
 const getSingleStore = async (id: string) => {
-    const result = await Store.findById(id);
+    const result = await Store.findById(id).populate({
+        path: 'user',
+        select: 'isBlocked',
+    });
     return result;
 };
 
