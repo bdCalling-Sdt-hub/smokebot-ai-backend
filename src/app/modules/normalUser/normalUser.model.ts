@@ -19,4 +19,4 @@ const NormalUserSchema = new mongoose.Schema({
     },
 });
 
-export const NormalUserModel = mongoose.model('NormalUser', NormalUserSchema);
+export const NormalUser = mongoose.model('NormalUser', NormalUserSchema);
