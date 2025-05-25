@@ -14,7 +14,6 @@ const NormalUserSchema = new mongoose.Schema<INormalUser>({
     email: {
         type: String,
         required: true,
-        lowercase: true,
     },
     phone: {
         type: String,
