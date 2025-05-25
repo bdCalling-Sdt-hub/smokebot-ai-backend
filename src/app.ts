@@ -16,9 +16,16 @@ import { USER_ROLE } from './app/modules/user/user.constant';
 import auth from './app/middlewares/auth';
 import uploadCsvFile, { stopCsvUpload } from './app/helper/uploadCsv';
 import multer from 'multer';
+import handleWebhook from './stripe/webhook';
 const upload = multer({ dest: 'uploads/' });
 dotenv.config();
 
+// web hook
+app.post(
+    '/store/webhook',
+    express.raw({ type: 'application/json' }),
+    handleWebhook
+);
 // parser
 app.use(express.json());
 app.use(cookieParser());
