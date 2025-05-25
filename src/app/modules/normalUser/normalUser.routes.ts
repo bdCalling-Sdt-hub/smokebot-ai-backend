@@ -14,14 +14,19 @@ router.post(
     NormalUserController.createUser
 );
 router.get(
-    '/get-all-user',
-    auth(USER_ROLE.superAdmin, USER_ROLE.admin, USER_ROLE.user),
+    '/get-all-users',
+    auth(USER_ROLE.superAdmin),
     NormalUserController.getAllUser
+);
+router.get(
+    '/my-users',
+    auth(USER_ROLE.storeOwner),
+    NormalUserController.getMyUsers
 );
 
 router.delete(
     '/delete-user/:id',
-    auth(USER_ROLE.superAdmin, USER_ROLE.storeOwner),
+    auth(USER_ROLE.storeOwner),
     NormalUserController.deleteUser
 );
 
