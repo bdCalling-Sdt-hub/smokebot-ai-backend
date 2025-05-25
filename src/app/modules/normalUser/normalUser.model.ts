@@ -1,6 +1,12 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
+import { INormalUser } from './normalUser.interface';
 
-const NormalUserSchema = new mongoose.Schema({
+const NormalUserSchema = new mongoose.Schema<INormalUser>({
+    store: {
+        type: Schema.Types.ObjectId,
+        ref: 'Store',
+        required: true,
+    },
     name: {
         type: String,
         required: true,

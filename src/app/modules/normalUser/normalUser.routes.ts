@@ -1,25 +1,17 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import auth from '../../middlewares/auth';
 import { USER_ROLE } from '../user/user.constant';
 import validateRequest from '../../middlewares/validateRequest';
 import normalUserValidations from './normalUser.validation';
 import NormalUserController from './normalUser.controller';
-import { uploadFile } from '../../helper/mutler-s3-uploader';
 
 const router = express.Router();
 
-router.patch(
-    '/update-profile',
-    auth(USER_ROLE.user),
-    uploadFile(),
-    (req: Request, res: Response, next: NextFunction) => {
-        if (req.body.data) {
-            req.body = JSON.parse(req.body.data);
-        }
-        next();
-    },
-    validateRequest(normalUserValidations.updateNormalUserValidationSchema),
-    NormalUserController.updateUserProfile
+router.post(
+    '/create-user',
+    auth(USER_ROLE.storeOwner, USER_ROLE.superAdmin),
+    validateRequest(normalUserValidations.createNormalUserValidationSchema),
+    NormalUserController.createUser
 );
 router.get(
     '/get-all-user',
@@ -27,26 +19,10 @@ router.get(
     NormalUserController.getAllUser
 );
 
-router.get(
-    '/single-user/:id',
-    auth(USER_ROLE.superAdmin, USER_ROLE.user),
-    NormalUserController.getSingleUser
-);
-
-router.patch(
-    '/add-remove-connection/:id',
-    auth(USER_ROLE.user),
-    NormalUserController.connectionAddRemove
-);
-router.patch(
-    '/accpet-reject-connection-request/:id',
-    auth(USER_ROLE.user),
-    NormalUserController.acceptRejectConnectionRequest
-);
-router.patch(
-    '/block-unblock-user/:id',
-    auth(USER_ROLE.user),
-    NormalUserController.blockUnblockUser
+router.delete(
+    '/delete-user/:id',
+    auth(USER_ROLE.superAdmin, USER_ROLE.storeOwner),
+    NormalUserController.deleteUser
 );
 
 export const normalUserRoutes = router;
