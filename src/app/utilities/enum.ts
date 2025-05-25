@@ -28,3 +28,9 @@ export const ENUM_INCIDENT_TYPE = {
     SPAM: 'Spam',
     OTHER: 'Other',
 };
+
+export const ENUM_PAYMENT_PURPOSE = {
+    PURCHASE_SUBSCRIPTION: 'purchase-subscription',
+    RENEW_SUBSCRIPTION: 'renew-subscription',
+    COLLABRATE_PAYMENT: 'collabrate-payment',
+};
