@@ -7,6 +7,8 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../config';
 import { TUserRole } from '../modules/user/user.interface';
 import { User } from '../modules/user/user.model';
+import { USER_ROLE } from '../modules/user/user.constant';
+import Store from '../modules/store/store.model';
 
 // make costume interface
 
@@ -64,6 +66,31 @@ const auth = (...requiredRoles: TUserRole[]) => {
                     httpStatus.BAD_REQUEST,
                     'You are not verified user'
                 );
+            }
+
+            if (user.role == USER_ROLE.storeOwner) {
+                const store = await Store.findOne({ user: id });
+                if (!store) {
+                    throw new AppError(httpStatus.NOT_FOUND, 'Store not found');
+                }
+                const currentDate = new Date();
+                if (
+                    currentDate > store?.trialEndDate &&
+                    !store.subscriptionExpiryDate
+                ) {
+                    throw new AppError(
+                        httpStatus.BAD_REQUEST,
+                        'Your trial is expired'
+                    );
+                }
+                if (store.subscriptionExpiryDate) {
+                    if (currentDate > store.subscriptionExpiryDate) {
+                        throw new AppError(
+                            httpStatus.BAD_REQUEST,
+                            'Your subscription is expired please renew your subscription'
+                        );
+                    }
+                }
             }
 
             if (user?.passwordChangedAt && iat) {

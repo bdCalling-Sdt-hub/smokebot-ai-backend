@@ -44,17 +44,17 @@ const uploadCsvFile = async (req: Request, res: Response) => {
                     if (uploadCanceled) {
                         break;
                     }
-                    const {
+                    console.log('row', row);
+                    const { name, isFeatured, category, price, quantity } = row;
+                    console.log(
+                        'kdjkdjfkdj',
                         name,
-                        image,
                         isFeatured,
                         category,
-                        price,
-                        quantity,
-                    } = row;
+                        price
+                    );
                     const payload = {
                         name,
-                        image,
                         isFeatured,
                         category,
                         price,
@@ -88,7 +88,7 @@ const uploadCsvFile = async (req: Request, res: Response) => {
                     }
 
                     await Product.findOneAndUpdate(
-                        { name: payload.name },
+                        { name: payload.name, store: req.user.profileId },
                         {
                             ...payload,
                             store: req.user.profileId,

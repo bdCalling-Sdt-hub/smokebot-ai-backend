@@ -3,26 +3,50 @@ import QueryBuilder from '../../builder/QueryBuilder';
 import AppError from '../../error/appError';
 import { INormalUser } from './normalUser.interface';
 import { NormalUser } from './normalUser.model';
+import { JwtPayload } from 'jsonwebtoken';
+import { USER_ROLE } from '../user/user.constant';
 
 const createUser = async (storeId: string, payload: INormalUser) => {
     const result = await NormalUser.create({ ...payload, store: storeId });
     return result;
 };
 
-const getAllUser = async (query: Record<string, unknown>) => {
-    const resultQuery = new QueryBuilder(NormalUser.find(), query)
-        .search(['name'])
-        .fields()
-        .filter()
-        .paginate()
-        .sort();
+const getAllUser = async (
+    userData: JwtPayload,
+    query: Record<string, unknown>
+) => {
+    if (userData.role == USER_ROLE.storeOwner) {
+        const resultQuery = new QueryBuilder(
+            NormalUser.find({ store: userData.profileId }),
+            query
+        )
+            .search(['name'])
+            .fields()
+            .filter()
+            .paginate()
+            .sort();
 
-    const result = await resultQuery.modelQuery;
-    const meta = await resultQuery.countTotal();
-    return {
-        meta,
-        result,
-    };
+        const result = await resultQuery.modelQuery;
+        const meta = await resultQuery.countTotal();
+        return {
+            meta,
+            result,
+        };
+    } else {
+        const resultQuery = new QueryBuilder(NormalUser.find(), query)
+            .search(['name'])
+            .fields()
+            .filter()
+            .paginate()
+            .sort();
+
+        const result = await resultQuery.modelQuery;
+        const meta = await resultQuery.countTotal();
+        return {
+            meta,
+            result,
+        };
+    }
 };
 const getMyUsers = async (storeId: string, query: Record<string, unknown>) => {
     const resultQuery = new QueryBuilder(
