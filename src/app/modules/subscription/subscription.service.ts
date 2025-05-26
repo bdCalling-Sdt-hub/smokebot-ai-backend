@@ -80,8 +80,26 @@ const purchaseSubscription = async (profileId: string) => {
     }
 };
 
+const continueWithTrail = async (profileId: string) => {
+    const currentDate = new Date();
+    const fiveDaysLater = new Date();
+    fiveDaysLater.setDate(currentDate.getDate() + 5);
+
+    const result = await Store.findByIdAndUpdate(
+        profileId,
+        {
+            trialStartDate: currentDate,
+            trialEndDate: fiveDaysLater,
+        },
+        { new: true, runValidators: true }
+    );
+
+    return result;
+};
+
 const SubscriptionService = {
     purchaseSubscription,
+    continueWithTrail,
 };
 
 export default SubscriptionService;

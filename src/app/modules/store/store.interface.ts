@@ -9,4 +9,6 @@ export interface IStore {
     subscriptionPurchaseDate?: Date;
     subscriptionRenewDate?: Date;
     subscriptionExpiryDate?: Date;
+    trialStartDate: Date;
+    trialEndDate: Date;
 }

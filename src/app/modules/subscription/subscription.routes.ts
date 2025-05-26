@@ -9,5 +9,10 @@ router.post(
     auth(USER_ROLE.storeOwner),
     SubscriptionController.purchaseSubscription
 );
+router.post(
+    '/continue-with-trial',
+    auth(USER_ROLE.storeOwner),
+    SubscriptionController.continueWithTrail
+);
 
 export const subscriptionRoutes = router;
