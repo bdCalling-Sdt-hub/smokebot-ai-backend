@@ -15,7 +15,7 @@ router.post(
 );
 router.get(
     '/get-all-users',
-    auth(USER_ROLE.superAdmin),
+    auth(USER_ROLE.superAdmin, USER_ROLE.storeOwner),
     NormalUserController.getAllUser
 );
 router.get(

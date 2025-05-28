@@ -12,6 +12,7 @@ import { storeRoutes } from '../modules/store/store.routes';
 import { categoryRoutes } from '../modules/category/category.routes';
 import { productRoutes } from '../modules/product/product.routes';
 import { subscriptionRoutes } from '../modules/subscription/subscription.routes';
+import { chatRoutes } from '../modules/chatbot/chatbot.routes';
 
 const router = Router();
 
@@ -71,6 +72,10 @@ const moduleRoutes = [
     {
         path: '/subscription',
         router: subscriptionRoutes,
+    },
+    {
+        path: '/chatbot',
+        router: chatRoutes,
     },
 ];
 
