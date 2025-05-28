@@ -3,10 +3,11 @@ import axios from 'axios';
 import Chat from './chatbot.model';
 import AppError from '../../error/appError';
 import httpStatus from 'http-status';
+import config from '../../config';
 
-const GROQ_API_KEY = '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';
-const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const GROQ_MODEL = 'llama3-70b-8192';
+const GROQ_API_KEY = config.AI.groq_api_key;
+const GROQ_API_URL = config.AI.groq_api_url;
+const GROQ_MODEL = config.AI.groq_model;
 
 const conversations: any = {};
 
@@ -29,7 +30,7 @@ const chat = async (payload: any) => {
 
     try {
         const response: any = await axios.post(
-            GROQ_API_URL,
+            GROQ_API_URL as string,
             {
                 model: GROQ_MODEL,
                 messages: conversations[userId].messages,
@@ -43,12 +44,12 @@ const chat = async (payload: any) => {
         );
 
         const reply = response.data.choices[0].message;
-
+        console.log('reply', reply);
         conversations[userId].messages.push(reply);
         const result = await Chat.create({
             user: userId,
             userMessage: userMessage,
-            aiReply: reply,
+            aiReply: reply.content,
         });
 
         return result;

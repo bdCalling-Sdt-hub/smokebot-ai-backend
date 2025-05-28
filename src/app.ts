@@ -18,6 +18,7 @@ import uploadCsvFile, { stopCsvUpload } from './app/helper/uploadCsv';
 import multer from 'multer';
 import handleWebhook from './stripe/webhook';
 import axios from 'axios';
+import config from './app/config';
 const upload = multer({ dest: 'uploads/' });
 dotenv.config();
 
@@ -64,10 +65,9 @@ app.get('/', async (req, res) => {
     res.send({ message: 'Welcome to dance club server' });
 });
 
-const GROQ_API_KEY = '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';
-const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const GROQ_MODEL = 'llama3-70b-8192';
-
+const GROQ_API_KEY = config.AI.groq_api_key;
+const GROQ_API_URL = config.AI.groq_api_url;
+const GROQ_MODEL = config.AI.groq_model;
 // app.post('/chat', async (req, res) => {
 //     const { messages } = req.body;
 
@@ -151,8 +151,8 @@ app.post('/chat', async (req, res) => {
     conversations[userId].messages.push({ role: 'user', content: userMessage });
 
     try {
-        const response = await axios.post(
-            GROQ_API_URL,
+        const response: any = await axios.post(
+            GROQ_API_URL as string,
             {
                 model: GROQ_MODEL,
                 messages: conversations[userId].messages,
@@ -170,7 +170,7 @@ app.post('/chat', async (req, res) => {
         conversations[userId].messages.push(reply);
 
         res.json({ reply });
-    } catch (error) {
+    } catch (error: any) {
         console.error(error.response?.data || error.message);
         res.status(500).json({ error: 'Failed to get response from API' });
     }

@@ -49,5 +49,9 @@ export default {
         smtp_pass: process.env.SMTP_PASS,
         name: process.env.SERVICE_NAME,
     },
-    smartsheet_api_key: process.env.SMARTSHEET_API_KEY,
+    AI: {
+        groq_model: process.env.GROQ_MODEL,
+        groq_api_url: process.env.GROQ_API_URL,
+        groq_api_key: process.env.GROQ_API_KEY,
+    },
 };

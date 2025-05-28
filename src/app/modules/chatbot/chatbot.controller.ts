@@ -7,7 +7,7 @@ const chat = catchAsync(async (req, res) => {
     sendResponse(res, {
         statusCode: 201,
         success: true,
-        message: 'Conversation retrieved successfully',
+        message: 'Chat retrieved successfully',
         data: result,
     });
 });
