@@ -6,7 +6,6 @@ import AppError from '../../error/appError';
 import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import { USER_ROLE } from './user.constant';
-import NormalUser from '../normalUser/normalUser.model';
 import cron from 'node-cron';
 import { JwtPayload } from 'jsonwebtoken';
 import SuperAdmin from '../superAdmin/superAdmin.model';
@@ -21,6 +20,7 @@ import registrationSuccessEmailBody from '../../mailTemplate/registerSucessEmail
 import Store from '../store/store.model';
 import { createToken } from './user.utils';
 import config from '../../config';
+import { NormalUser } from '../normalUser/normalUser.model';
 dotenv.config();
 const generateVerifyCode = (): number => {
     return Math.floor(10000 + Math.random() * 900000);
