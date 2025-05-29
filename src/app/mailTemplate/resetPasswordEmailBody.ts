@@ -84,7 +84,7 @@ const resetPasswordEmailBody = (name: string, resetCode: number) => `
     <body>
       <div class="container">
         <div class="header">
-          <img src="https://res.cloudinary.com/dp6nuvot3/image/upload/v1746078264/kaupy8omgv069w3dn4p4.png" alt="Movementum Studio Logo">
+          <img src="https://res.cloudinary.com/dp6nuvot3/image/upload/v1746078264/kaupy8omgv069w3dn4p4.png" alt="SmokeBot Logo">
           <h1>Password Reset Request</h1>
         </div>
         <div class="content">
@@ -95,8 +95,8 @@ const resetPasswordEmailBody = (name: string, resetCode: number) => `
           <p>If you have any questions, feel free to contact us at <a href="mailto:support@movementumstudio.com">support@movementumstudio.com</a>.</p>
         </div>
         <div class="footer">
-          <p>&copy; ${new Date().getFullYear()} Movementum Studio. All rights reserved.</p>
-          <p><a href="https://movementumstudio.com/privacy">Privacy Policy</a> | <a href="https://movementumstudio.com/contact">Contact Us</a></p>
+          <p>&copy; ${new Date().getFullYear()} SmokeBot. All rights reserved.</p>
+          <p><a href="https://smokebot.com/privacy">Privacy Policy</a> | <a href="https://smokebot.com/contact">Contact Us</a></p>
         </div>
       </div>
     </body>

@@ -84,20 +84,20 @@ const registrationSuccessEmailBody = (name: string, activationCode: number) => `
     <body>
       <div class="container">
         <div class="header">
-          <img src="https://res.cloudinary.com/dp6nuvot3/image/upload/v1746078264/kaupy8omgv069w3dn4p4.png" alt="Movementum Studio Logo">
+          <img src="https://res.cloudinary.com/dp6nuvot3/image/upload/v1746078264/kaupy8omgv069w3dn4p4.png" alt="SmokeBot Logo">
           <h1>Welcome to Movementum Studio!</h1>
         </div>
         <div class="content">
           <h2>Hello, ${name}</h2>
-          <p>Thank you for registering with Movementum Studio. To activate your account, please use the following activation code:</p>
+          <p>Thank you for registering with SmokeBot. To activate your account, please use the following activation code:</p>
           <div class="activation-code">${activationCode || 'XXXXXX'}</div>
           <p>Enter this code on the activation page within the next 5 minutes. If you don't verify your account, it will be deleted from our database and you will need to register again.</p>
           <p>If you didn't register, ignore this email.</p>
-          <p>If you have any questions, feel free to contact us at <a href="mailto:support@movementumstudio.com">support@movementumstudio.com</a>.</p>
+          <p>If you have any questions, feel free to contact us at <a href="mailto:support@smokebot.com">support@smokebot.com</a>.</p>
         </div>
         <div class="footer">
-          <p>&copy; ${new Date().getFullYear()} Movementum Studio. All rights reserved.</p>
-          <p><a href="https://movementumstudio.com/privacy">Privacy Policy</a> | <a href="https://movementumstudio.com/contact">Contact Us</a></p>
+          <p>&copy; ${new Date().getFullYear()} SmokeBot. All rights reserved.</p>
+          <p><a href="https://smokebot.com/privacy">Privacy Policy</a> | <a href="https://smokebot.com/contact">Contact Us</a></p>
         </div>
       </div>
     </body>
