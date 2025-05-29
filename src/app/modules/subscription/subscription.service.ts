@@ -14,7 +14,7 @@ const purchaseSubscription = async (profileId: string) => {
         throw new AppError(httpStatus.NOT_FOUND, 'User not found');
     }
     const amountInCent = subscriptionPrice * 100;
-    const userId = store._id.toString();
+    const storeId = store._id.toString();
 
     if (
         store?.subscriptionExpiryDate &&
@@ -43,11 +43,11 @@ const purchaseSubscription = async (profileId: string) => {
                 },
             ],
             metadata: {
-                userId,
+                userId: storeId,
                 paymentPurpose: ENUM_PAYMENT_PURPOSE.RENEW_SUBSCRIPTION,
             },
             customer_email: store?.email,
-            success_url: `${config.stripe.subscription_renew_success_url}?collaborationId=${userId}`,
+            success_url: `${config.stripe.subscription_renew_success_url}?collaborationId=${storeId}`,
             cancel_url: `${config.stripe.subscription_renew_cancel_url}`,
         });
         return { url: session.url };
@@ -68,11 +68,11 @@ const purchaseSubscription = async (profileId: string) => {
                 },
             ],
             metadata: {
-                userId,
+                storeId: storeId,
                 paymentPurpose: ENUM_PAYMENT_PURPOSE.PURCHASE_SUBSCRIPTION,
             },
             customer_email: store?.email,
-            success_url: `${config.stripe.subscription_payment_success_url}?collaborationId=${userId}`,
+            success_url: `${config.stripe.subscription_payment_success_url}`,
             cancel_url: `${config.stripe.subscription_payment_cancel_url}`,
         });
 
@@ -81,6 +81,13 @@ const purchaseSubscription = async (profileId: string) => {
 };
 
 const continueWithTrail = async (profileId: string) => {
+    const store = await Store.findById(profileId);
+    if (store?.trialStartDate) {
+        throw new AppError(
+            httpStatus.NOT_FOUND,
+            'You already take trial , now you need to purchase subscription'
+        );
+    }
     const currentDate = new Date();
     const fiveDaysLater = new Date();
     fiveDaysLater.setDate(currentDate.getDate() + 5);

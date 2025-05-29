@@ -38,7 +38,7 @@ const handleSubcriptionPurchaseSuccess = async (
     const io = getIO();
     const normalUser = await Store.findById(storeId);
     if (!normalUser) {
-        throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+        throw new AppError(httpStatus.NOT_FOUND, 'Store not found');
     }
 
     await Store.findByIdAndUpdate(
