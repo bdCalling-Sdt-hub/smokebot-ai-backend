@@ -58,7 +58,7 @@ const auth = (...requiredRoles: TUserRole[]) => {
             if (user.isBlocked) {
                 throw new AppError(
                     httpStatus.FORBIDDEN,
-                    'This user is blocked'
+                    'Your account is blocked by admin , please contact with admin'
                 );
             }
             if (!user?.isVerified) {

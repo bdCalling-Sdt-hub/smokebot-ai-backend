@@ -12,12 +12,12 @@ import bcrypt from 'bcrypt';
 import resetPasswordEmailBody from '../../mailTemplate/resetPasswordEmailBody';
 import sendEmail from '../../utilities/sendEmail';
 
-import NormalUser from '../normalUser/normalUser.model';
 import appleSigninAuth from 'apple-signin-auth';
 import { OAuth2Client } from 'google-auth-library';
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 // const GOOGLE_CLIENT_IDS = (process.env.GOOGLE_CLIENT_IDS || '').split(',');
 import axios from 'axios';
+import { NormalUser } from '../normalUser/normalUser.model';
 const generateVerifyCode = (): number => {
     return Math.floor(100000 + Math.random() * 900000);
 };
@@ -34,7 +34,10 @@ const loginUserIntoDB = async (payload: TLoginUser) => {
         );
     }
     if (user.isBlocked) {
-        throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked');
+        throw new AppError(
+            httpStatus.FORBIDDEN,
+            'Your account is blocked by admin , please contact with admin'
+        );
     }
     if (!user.isVerified) {
         throw new AppError(
