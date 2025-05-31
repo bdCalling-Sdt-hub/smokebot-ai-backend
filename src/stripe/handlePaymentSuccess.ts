@@ -4,7 +4,7 @@
 /* eslint-disable no-console */
 import httpStatus from 'http-status';
 import { ENUM_PAYMENT_PURPOSE } from '../app/utilities/enum';
-import { getIO } from '../app/socket/socketManager';
+// import { getIO } from '../app/socket/socketManager';
 import Store from '../app/modules/store/store.model';
 import AppError from '../app/error/appError';
 
@@ -35,7 +35,7 @@ const handleSubcriptionPurchaseSuccess = async (
     transactionId: string,
     amount: number
 ) => {
-    const io = getIO();
+    // const io = getIO();
     const normalUser = await Store.findById(storeId);
     if (!normalUser) {
         throw new AppError(httpStatus.NOT_FOUND, 'Store not found');

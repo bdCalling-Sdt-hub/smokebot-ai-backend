@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import fs, { PathLike } from 'fs';
 import csv from 'csv-parser';
-import { getIO } from '../socket/socketManager';
+// import { getIO } from '../socket/socketManager';
 import unlinkFile from '../utilities/unlinkFile';
 import Category from '../modules/category/category.model';
 import { Product } from '../modules/product/product.model';
@@ -18,7 +18,7 @@ const uploadCsvFile = async (req: Request, res: Response) => {
     uploadCanceled = false;
     const filePath = req?.file?.path;
     const results: any[] = [];
-    const io = getIO();
+    // const io = getIO();
 
     fs.createReadStream(filePath as PathLike)
         .pipe(csv())
@@ -39,7 +39,7 @@ const uploadCsvFile = async (req: Request, res: Response) => {
         })
         .on('end', async () => {
             try {
-                let count = 0;
+                // let count = 0;
                 for (const row of results) {
                     if (uploadCanceled) {
                         break;
@@ -95,11 +95,11 @@ const uploadCsvFile = async (req: Request, res: Response) => {
                         },
                         { upsert: true, new: true }
                     );
-                    count++;
-                    io.emit('upload-progress', {
-                        total: results?.length,
-                        completed: count,
-                    });
+                    // count++;
+                    // io.emit('upload-progress', {
+                    //     total: results?.length,
+                    //     completed: count,
+                    // });
                 }
 
                 // Delete file after processing
