@@ -8,7 +8,7 @@ function createModule(profileName: string, moduleName: string): void {
     if (!fs.existsSync(baseDir)) {
         fs.mkdirSync(baseDir);
     }
-
+    //
     const moduleDir = path.join(baseDir, moduleName);
     if (!fs.existsSync(moduleDir)) {
         fs.mkdirSync(moduleDir);
