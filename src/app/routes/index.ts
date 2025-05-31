@@ -3,7 +3,6 @@ import { userRoutes } from '../modules/user/user.routes';
 import { authRoutes } from '../modules/auth/auth.routes';
 import { ManageRoutes } from '../modules/manage-web/manage.routes';
 import { normalUserRoutes } from '../modules/normalUser/normalUser.routes';
-import { metaRoutes } from '../modules/meta/meta.routes';
 import { AdminRoutes } from '../modules/admin/admin.routes';
 import { superAdminRoutes } from '../modules/superAdmin/superAdmin.routes';
 // import { subscriptionRoutes } from '../modules/subscription/subscription.routes';
@@ -32,11 +31,6 @@ const moduleRoutes = [
     {
         path: '/manage',
         router: ManageRoutes,
-    },
-
-    {
-        path: '/meta',
-        router: metaRoutes,
     },
 
     {
