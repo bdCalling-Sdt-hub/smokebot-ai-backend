@@ -15,6 +15,7 @@ const createProduct = async (storeId: string, payload: IProduct) => {
     }
     const totalFeaturedProduct = await Product.countDocuments({
         isFeatured: true,
+        store: storeId,
     });
     if (totalFeaturedProduct >= 5) {
         throw new AppError(
@@ -37,6 +38,7 @@ const updateProduct = async (
     }
     const totalFeaturedProduct = await Product.countDocuments({
         isFeatured: true,
+        store: storeId,
     });
     if (totalFeaturedProduct >= 5) {
         throw new AppError(

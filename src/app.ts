@@ -59,8 +59,81 @@ app.post(
     uploadCsvFile
 );
 app.post('/stop-csv-upload', stopCsvUpload);
-app.get('/', async (req, res) => {
-    res.send({ message: 'Welcome to dance club server' });
+app.get('/', (req, res) => {
+    res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>Welcome to Smokebot AI</title>
+      <style>
+        body {
+          margin: 0;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          background: linear-gradient(135deg, #667eea, #764ba2);
+          color: white;
+          height: 100vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+          overflow: hidden;
+        }
+        h1 {
+          font-size: 3rem;
+          margin: 0;
+          animation: fadeInSlide 2s ease forwards;
+        }
+        p {
+          font-size: 1.5rem;
+          margin-top: 10px;
+          animation: fadeInSlide 2s ease 1s forwards;
+          opacity: 0;
+        }
+        @keyframes fadeInSlide {
+          0% {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .sparkle {
+          position: absolute;
+          width: 5px;
+          height: 5px;
+          background: white;
+          border-radius: 50%;
+          animation: sparkleAnim 3s infinite ease-in-out;
+          opacity: 0.8;
+        }
+        @keyframes sparkleAnim {
+          0%, 100% { opacity: 0.8; transform: scale(1); }
+          50% { opacity: 0.3; transform: scale(0.5); }
+        }
+      </style>
+    </head>
+    <body>
+      <h1>Welcome to <br />Smokebot AI</h1>
+      <p>Your AI assistant for finding products fast and easy.</p>
+      <script>
+        // Create sparkling dots effect
+        for(let i=0; i<30; i++) {
+          const sparkle = document.createElement('div');
+          sparkle.classList.add('sparkle');
+          sparkle.style.top = Math.random() * 100 + 'vh';
+          sparkle.style.left = Math.random() * 100 + 'vw';
+          sparkle.style.animationDelay = (Math.random() * 3) + 's';
+          sparkle.style.width = sparkle.style.height = (Math.random() * 3 + 2) + 'px';
+          document.body.appendChild(sparkle);
+        }
+      </script>
+    </body>
+    </html>
+  `);
 });
 
 // global error handler
