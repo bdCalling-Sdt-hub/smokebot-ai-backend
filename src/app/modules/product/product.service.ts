@@ -13,6 +13,15 @@ const createProduct = async (storeId: string, payload: IProduct) => {
             'Category not found , please select valid category'
         );
     }
+    const totalFeaturedProduct = await Product.countDocuments({
+        isFeatured: true,
+    });
+    if (totalFeaturedProduct >= 5) {
+        throw new AppError(
+            httpStatus.BAD_REQUEST,
+            'You already added 5 featured product , if you want to add that as feature you need to make unfeatured a product first'
+        );
+    }
     const created = await Product.create({ ...payload, store: storeId });
     return created;
 };
@@ -26,7 +35,15 @@ const updateProduct = async (
     if (!product) {
         throw new AppError(httpStatus.NOT_FOUND, 'Product not found');
     }
-
+    const totalFeaturedProduct = await Product.countDocuments({
+        isFeatured: true,
+    });
+    if (totalFeaturedProduct >= 5) {
+        throw new AppError(
+            httpStatus.BAD_REQUEST,
+            'You already added 5 featured product , if you want to add that as feature you need to make unfeatured a product first'
+        );
+    }
     if (payload.category) {
         const data = await Category.findOne();
         if (!data?.categories.includes(payload.category)) {

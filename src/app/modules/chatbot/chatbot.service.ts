@@ -273,6 +273,239 @@ import { Product } from '../product/product.model';
 // make soem changes =====================================
 
 // Helper to extract product keywords (simple version)
+// const extractKeywords = (text: string): string[] => {
+//     const stopWords = new Set([
+//         'is',
+//         'the',
+//         'in',
+//         'your',
+//         'do',
+//         'you',
+//         'have',
+//         'any',
+//         'of',
+//         'with',
+//         'for',
+//         'there',
+//         'store',
+//         'shop',
+//         'like',
+//         'that',
+//         'and',
+//     ]);
+//     return text
+//         .toLowerCase()
+//         .split(/\W+/)
+//         .filter((word) => word.length > 2 && !stopWords.has(word));
+// };
+
+// // Group products by base name for clearer variants
+// const groupProductsByBaseName = (products: any[]) => {
+//     const groups: Record<string, any[]> = {};
+//     products.forEach((p) => {
+//         const baseName = p.name.split(' ').slice(0, 2).join(' ');
+//         if (!groups[baseName]) groups[baseName] = [];
+//         groups[baseName].push(p);
+//     });
+//     return groups;
+// };
+
+// const buildProductsSummary = (products: any[]) => {
+//     if (!products.length) return null;
+//     const grouped = groupProductsByBaseName(products);
+//     let summary = '';
+//     for (const baseName in grouped) {
+//         summary += `${baseName}:\n`;
+//         grouped[baseName].forEach((p) => {
+//             summary += ` - ${p.name}, Quantity: ${
+//                 p.quantity
+//             }, Price: $${p.price.toFixed(2)}\n`;
+//         });
+//     }
+//     return summary.trim();
+// };
+
+// const fetchProductData = async (storeId: string, userMessage: string) => {
+//     const keywords = extractKeywords(userMessage);
+
+//     let products;
+
+//     if (keywords.length === 0) {
+//         // If no keywords detected, fetch up to 10 products (could be featured or all)
+//         products = await Product.find({ store: storeId }).limit(10);
+//     } else {
+//         const regex = keywords.join('|');
+
+//         // 1) Try to find products by name
+//         products = await Product.find({
+//             store: storeId,
+//             name: { $regex: regex, $options: 'i' },
+//         });
+
+//         // 2) If no products found by name, try by category
+//         if (products.length === 0) {
+//             products = await Product.find({
+//                 store: storeId,
+//                 category: { $regex: regex, $options: 'i' },
+//             });
+//         }
+
+//         // 3) If still no products, fallback to some products anyway
+//         if (products.length === 0) {
+//             products = await Product.find({ store: storeId }).limit(10);
+//         }
+//     }
+
+//     if (!products || products.length === 0) return null;
+
+//     return buildProductsSummary(products);
+// };
+
+// /**
+//  * Fetch distinct categories for store
+//  */
+// const fetchCategories = async (storeId: string) => {
+//     const categories = await Product.distinct('category', { store: storeId });
+//     return categories.length > 0 ? categories : null;
+// };
+
+// // const GROQ_API_KEY = config.AI.groq_api_key;
+// // const GROQ_API_URL = config.AI.groq_api_url;
+// // const GROQ_MODEL = config.AI.groq_model;
+// const OPENAI_API_KEY = config.AI.open_ai_api_key;
+// const OPENAI_API_URL = config.AI.open_ai_url;
+// // const OPENAI_MODEL = 'gpt-3.5-turbo';
+// const OPENAI_MODEL = config.AI.open_ai_model;
+
+// const conversations: any = {};
+
+// const chat = async (
+//     storeId: string,
+//     payload: {
+//         userId: string;
+//         message: string;
+//     }
+// ) => {
+//     const { userId, message: userMessage } = payload;
+
+//     if (!conversations[userId]) {
+//         conversations[userId] = {
+//             messages: [
+//                 { role: 'system', content: 'You are a helpful assistant.' },
+//             ],
+//             lastActive: new Date(),
+//         };
+//     } else {
+//         conversations[userId].lastActive = new Date();
+//     }
+
+//     const productsSummary = await fetchProductData(storeId, userMessage);
+//     const categories = await fetchCategories(storeId);
+
+//     // Compose system prompt
+//     let systemPrompt = `You are a helpful assistant for a store chatbot.`;
+
+//     if (productsSummary) {
+//         systemPrompt += `\n\nHere is the product data available for this store:\n${productsSummary}\n\n`;
+//     }
+
+//     if (categories) {
+//         systemPrompt += `Available product categories in this store: ${categories.join(
+//             ', '
+//         )}.\n\n`;
+//     }
+
+//     systemPrompt += `
+// Rules:
+// - You can only confirm availability and quantity for products listed above.
+// - If the user asks about any product NOT in the above list, respond: "Sorry, we do not have that product in our store."
+// - If the user asks vaguely about product variants, only mention variants listed above.
+// - For features or benefits, answer based on your general knowledge.
+// - If the store has no products, inform the user politely.
+// - Otherwise, answer normally.
+// `;
+
+//     conversations[userId].messages[0] = {
+//         role: 'system',
+//         content: systemPrompt,
+//     };
+
+//     conversations[userId].messages.push({ role: 'user', content: userMessage });
+
+//     try {
+//         // const response: any = await axios.post(
+//         //     GROQ_API_URL as string,
+//         //     {
+//         //         model: GROQ_MODEL,
+//         //         messages: conversations[userId].messages,
+//         //     },
+//         //     {
+//         //         headers: {
+//         //             Authorization: `Bearer ${GROQ_API_KEY}`,
+//         //             'Content-Type': 'application/json',
+//         //         },
+//         //     }
+//         // );
+//         const response: any = await axios.post(
+//             OPENAI_API_URL as string,
+//             {
+//                 model: OPENAI_MODEL,
+//                 messages: conversations[userId].messages,
+//             },
+//             {
+//                 headers: {
+//                     Authorization: `Bearer ${OPENAI_API_KEY}`,
+//                     'Content-Type': 'application/json',
+//                 },
+//             }
+//         );
+
+//         const reply = response.data.choices[0].message;
+//         conversations[userId].messages.push(reply);
+
+//         // Save chat to DB
+//         const result = await Chat.create({
+//             user: userId,
+//             userMessage: userMessage,
+//             aiReply: reply.content,
+//         });
+
+//         return result;
+//     } catch (error: any) {
+//         console.error(error.response?.data || error.message);
+//         throw new AppError(
+//             httpStatus.SERVICE_UNAVAILABLE,
+//             `'Failed to get response from API' ${error.message}`
+//         );
+//     }
+// };
+
+// // Cleanup unchanged from your original code
+// const CLEANUP_INTERVAL = 2 * 60 * 1000; // 2 minutes
+// const SESSION_TIMEOUT = 5 * 60 * 1000; // 5 minutes
+
+// setInterval(() => {
+//     const now = Date.now();
+//     for (const userId in conversations) {
+//         if (
+//             now - conversations[userId].lastActive.getTime() >
+//             SESSION_TIMEOUT
+//         ) {
+//             console.log(
+//                 `Clearing session for user ${userId} due to inactivity over 5 minutes.`
+//             );
+//             delete conversations[userId];
+//         }
+//     }
+// }, CLEANUP_INTERVAL);
+
+const OPENAI_API_KEY = config.AI.open_ai_api_key;
+const OPENAI_API_URL = config.AI.open_ai_url;
+const OPENAI_MODEL = config.AI.open_ai_model;
+
+const conversations: any = {};
+
+// Utility: Extract meaningful keywords
 const extractKeywords = (text: string): string[] => {
     const stopWords = new Set([
         'is',
@@ -299,7 +532,7 @@ const extractKeywords = (text: string): string[] => {
         .filter((word) => word.length > 2 && !stopWords.has(word));
 };
 
-// Group products by base name for clearer variants
+// Grouping and summarizing products
 const groupProductsByBaseName = (products: any[]) => {
     const groups: Record<string, any[]> = {};
     products.forEach((p) => {
@@ -325,24 +558,20 @@ const buildProductsSummary = (products: any[]) => {
     return summary.trim();
 };
 
+// Product data fetching based on user input
 const fetchProductData = async (storeId: string, userMessage: string) => {
     const keywords = extractKeywords(userMessage);
-
     let products;
 
     if (keywords.length === 0) {
-        // If no keywords detected, fetch up to 10 products (could be featured or all)
         products = await Product.find({ store: storeId }).limit(10);
     } else {
         const regex = keywords.join('|');
-
-        // 1) Try to find products by name
         products = await Product.find({
             store: storeId,
             name: { $regex: regex, $options: 'i' },
         });
 
-        // 2) If no products found by name, try by category
         if (products.length === 0) {
             products = await Product.find({
                 store: storeId,
@@ -350,35 +579,50 @@ const fetchProductData = async (storeId: string, userMessage: string) => {
             });
         }
 
-        // 3) If still no products, fallback to some products anyway
         if (products.length === 0) {
             products = await Product.find({ store: storeId }).limit(10);
         }
     }
 
-    if (!products || products.length === 0) return null;
-
-    return buildProductsSummary(products);
+    return products && products.length > 0
+        ? buildProductsSummary(products)
+        : null;
 };
 
-/**
- * Fetch distinct categories for store
- */
+// Distinct categories
 const fetchCategories = async (storeId: string) => {
     const categories = await Product.distinct('category', { store: storeId });
     return categories.length > 0 ? categories : null;
 };
 
-// const GROQ_API_KEY = config.AI.groq_api_key;
-// const GROQ_API_URL = config.AI.groq_api_url;
-// const GROQ_MODEL = config.AI.groq_model;
-const OPENAI_API_KEY = config.AI.open_ai_api_key;
-const OPENAI_API_URL = config.AI.open_ai_url;
-// const OPENAI_MODEL = 'gpt-3.5-turbo';
-const OPENAI_MODEL = config.AI.open_ai_model;
+// Featured-related queries
+const isFeaturedQuery = (text: string): boolean => {
+    return /featured (products?|items?)|any featured/i.test(text);
+};
 
-const conversations: any = {};
+const isSpecificProductFeaturedQuery = (text: string): string | null => {
+    const match = text.match(/is (.+?) (a )?featured (product|item)?/i);
+    return match ? match[1].trim() : null;
+};
 
+const fetchFeaturedProducts = async (storeId: string) => {
+    const featured = await Product.find({
+        store: storeId,
+        isFeatured: true,
+    }).limit(5);
+    if (!featured.length)
+        return 'There are no featured products in this store.';
+
+    let summary = `Yes, here are some featured products:\n`;
+    featured.forEach((p) => {
+        summary += ` - ${p.name}, Quantity: ${
+            p.quantity
+        }, Price: $${p.price.toFixed(2)}\n`;
+    });
+    return summary.trim();
+};
+
+// Main chat handler
 const chat = async (
     storeId: string,
     payload: {
@@ -399,10 +643,49 @@ const chat = async (
         conversations[userId].lastActive = new Date();
     }
 
+    // FEATURED PRODUCT HANDLING
+    const featuredListRequested = isFeaturedQuery(userMessage);
+    const specificProductName = isSpecificProductFeaturedQuery(userMessage);
+    let specialAnswer = '';
+
+    if (featuredListRequested) {
+        specialAnswer = await fetchFeaturedProducts(storeId);
+    } else if (specificProductName) {
+        const product = await Product.findOne({
+            store: storeId,
+            name: { $regex: new RegExp(`^${specificProductName}$`, 'i') },
+        });
+
+        if (!product) {
+            specialAnswer = `Sorry, we couldn’t find the product "${specificProductName}".`;
+        } else {
+            const isFeatured = product.isFeatured;
+            const featuredNote = isFeatured
+                ? 'Yes, it is a featured product.'
+                : 'No, it is not a featured product.';
+            const suggestions = await fetchFeaturedProducts(storeId);
+            specialAnswer = `${featuredNote}\n\n${suggestions}`;
+        }
+    }
+
+    if (specialAnswer) {
+        const result = await Chat.create({
+            user: userId,
+            userMessage: userMessage,
+            aiReply: specialAnswer,
+        });
+
+        conversations[userId].messages.push({
+            role: 'assistant',
+            content: specialAnswer,
+        });
+        return result;
+    }
+
+    // Fallback to OpenAI if no special case matched
     const productsSummary = await fetchProductData(storeId, userMessage);
     const categories = await fetchCategories(storeId);
 
-    // Compose system prompt
     let systemPrompt = `You are a helpful assistant for a store chatbot.`;
 
     if (productsSummary) {
@@ -415,37 +698,34 @@ const chat = async (
         )}.\n\n`;
     }
 
+    //     systemPrompt += `
+    // Rules:
+    // - You can only confirm availability and quantity for products listed above.
+    // - If the user asks about any product NOT in the above list, respond: "Sorry, we do not have that product in our store."
+    // - If the user asks vaguely about product variants, only mention variants listed above.
+    // - For features or benefits, answer based on your general knowledge.
+    // - If the store has no products, inform the user politely.
+    // - Otherwise, answer normally.
+    // `;
+
     systemPrompt += `
 Rules:
-- You can only confirm availability and quantity for products listed above.
-- If the user asks about any product NOT in the above list, respond: "Sorry, we do not have that product in our store."
-- If the user asks vaguely about product variants, only mention variants listed above.
-- For features or benefits, answer based on your general knowledge.
+- You are a helpful assistant for an online store.
+- You can confirm availability and quantity for products listed above.
+- If the user asks about any product NOT in the above list, politely say: "Sorry, we do not have that product in our store," but feel free to suggest **similar or relevant general advice**.
+- If the user asks vaguely (e.g., "What’s a good laptop for video editing?"), provide helpful **general guidance** or make suggestions based on common knowledge.
+- Do not make up products that aren't listed above, but feel free to offer **shopping tips, category advice, and comparison help**.
 - If the store has no products, inform the user politely.
-- Otherwise, answer normally.
+- Otherwise, answer in a friendly and informative tone.
 `;
 
     conversations[userId].messages[0] = {
         role: 'system',
         content: systemPrompt,
     };
-
     conversations[userId].messages.push({ role: 'user', content: userMessage });
 
     try {
-        // const response: any = await axios.post(
-        //     GROQ_API_URL as string,
-        //     {
-        //         model: GROQ_MODEL,
-        //         messages: conversations[userId].messages,
-        //     },
-        //     {
-        //         headers: {
-        //             Authorization: `Bearer ${GROQ_API_KEY}`,
-        //             'Content-Type': 'application/json',
-        //         },
-        //     }
-        // );
         const response: any = await axios.post(
             OPENAI_API_URL as string,
             {
@@ -463,7 +743,6 @@ Rules:
         const reply = response.data.choices[0].message;
         conversations[userId].messages.push(reply);
 
-        // Save chat to DB
         const result = await Chat.create({
             user: userId,
             userMessage: userMessage,
@@ -480,7 +759,7 @@ Rules:
     }
 };
 
-// Cleanup unchanged from your original code
+// Cleanup sessions
 const CLEANUP_INTERVAL = 2 * 60 * 1000; // 2 minutes
 const SESSION_TIMEOUT = 5 * 60 * 1000; // 5 minutes
 
@@ -492,7 +771,7 @@ setInterval(() => {
             SESSION_TIMEOUT
         ) {
             console.log(
-                `Clearing session for user ${userId} due to inactivity over 5 minutes.`
+                `Clearing session for user ${userId} due to inactivity.`
             );
             delete conversations[userId];
         }
