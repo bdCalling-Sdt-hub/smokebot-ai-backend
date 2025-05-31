@@ -17,8 +17,6 @@ import auth from './app/middlewares/auth';
 import uploadCsvFile, { stopCsvUpload } from './app/helper/uploadCsv';
 import multer from 'multer';
 import handleWebhook from './stripe/webhook';
-import axios from 'axios';
-import config from './app/config';
 const upload = multer({ dest: 'uploads/' });
 dotenv.config();
 
