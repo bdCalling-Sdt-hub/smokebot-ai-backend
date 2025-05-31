@@ -487,6 +487,9 @@ const getChatForUser = async (
     query: Record<string, unknown>
 ) => {
     delete query.id;
+    if (!query.sort) {
+        query.sort = 'createdAt';
+    }
     const resultQuery = new QueryBuilder(Chat.find({ user: userId }), query)
         .search(['name'])
         .filter()
