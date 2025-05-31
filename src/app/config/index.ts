@@ -53,5 +53,8 @@ export default {
         groq_model: process.env.GROQ_MODEL,
         groq_api_url: process.env.GROQ_API_URL,
         groq_api_key: process.env.GROQ_API_KEY,
+        open_ai_model: process.env.OPENAI_MODEL,
+        open_ai_url: process.env.OPENAI_API_URL,
+        open_ai_api_key: process.env.OPENAI_API_KEY,
     },
 };

@@ -369,9 +369,13 @@ const fetchCategories = async (storeId: string) => {
     return categories.length > 0 ? categories : null;
 };
 
-const GROQ_API_KEY = config.AI.groq_api_key;
-const GROQ_API_URL = config.AI.groq_api_url;
-const GROQ_MODEL = config.AI.groq_model;
+// const GROQ_API_KEY = config.AI.groq_api_key;
+// const GROQ_API_URL = config.AI.groq_api_url;
+// const GROQ_MODEL = config.AI.groq_model;
+const OPENAI_API_KEY = config.AI.open_ai_api_key;
+const OPENAI_API_URL = config.AI.open_ai_url;
+// const OPENAI_MODEL = 'gpt-3.5-turbo';
+const OPENAI_MODEL = config.AI.open_ai_model;
 
 const conversations: any = {};
 
@@ -429,15 +433,28 @@ Rules:
     conversations[userId].messages.push({ role: 'user', content: userMessage });
 
     try {
+        // const response: any = await axios.post(
+        //     GROQ_API_URL as string,
+        //     {
+        //         model: GROQ_MODEL,
+        //         messages: conversations[userId].messages,
+        //     },
+        //     {
+        //         headers: {
+        //             Authorization: `Bearer ${GROQ_API_KEY}`,
+        //             'Content-Type': 'application/json',
+        //         },
+        //     }
+        // );
         const response: any = await axios.post(
-            GROQ_API_URL as string,
+            OPENAI_API_URL as string,
             {
-                model: GROQ_MODEL,
+                model: OPENAI_MODEL,
                 messages: conversations[userId].messages,
             },
             {
                 headers: {
-                    Authorization: `Bearer ${GROQ_API_KEY}`,
+                    Authorization: `Bearer ${OPENAI_API_KEY}`,
                     'Content-Type': 'application/json',
                 },
             }
