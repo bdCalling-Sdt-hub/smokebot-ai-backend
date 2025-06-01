@@ -84,7 +84,6 @@ const resetPasswordEmailBody = (name: string, resetCode: number) => `
     <body>
       <div class="container">
         <div class="header">
-          <img src="https://res.cloudinary.com/dp6nuvot3/image/upload/v1746078264/kaupy8omgv069w3dn4p4.png" alt="SmokeBot Logo">
           <h1>Password Reset Request</h1>
         </div>
         <div class="content">

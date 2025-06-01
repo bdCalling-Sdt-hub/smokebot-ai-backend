@@ -84,8 +84,7 @@ const registrationSuccessEmailBody = (name: string, activationCode: number) => `
     <body>
       <div class="container">
         <div class="header">
-          <img src="https://res.cloudinary.com/dp6nuvot3/image/upload/v1746078264/kaupy8omgv069w3dn4p4.png" alt="SmokeBot Logo">
-          <h1>Welcome to Movementum Studio!</h1>
+          <h1>Welcome to Smokebot AI!</h1>
         </div>
         <div class="content">
           <h2>Hello, ${name}</h2>

@@ -45,6 +45,7 @@ app.use(
             'http://10.0.60.187:11000',
             'http://10.0.60.187:5000',
             'http://52.4.188.254',
+            'https://smokebot.ai',
         ],
         credentials: true,
     })
