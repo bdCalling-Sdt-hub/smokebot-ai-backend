@@ -51,7 +51,7 @@ app.use(
     })
 );
 app.use('/uploads', express.static('uploads'));
-// application routers ----------------
+// application routers -------------------
 app.use('/', router);
 app.post('/contact-us', sendContactUsEmail);
 app.post(
