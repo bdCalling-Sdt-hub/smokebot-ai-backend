@@ -44,7 +44,7 @@ const moduleRoutes = [
     },
     // {
     //     path: '/subscription',
-    //     router: subscriptionRoutes,
+    //     router: subscriptionRoutes,---
     // },
     {
         path: '/store',
