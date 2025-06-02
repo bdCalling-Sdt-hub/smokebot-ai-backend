@@ -8,10 +8,10 @@ import NormalUserController from './normalUser.controller';
 const router = express.Router();
 
 router.post(
-    '/create-user',
+    '/start-chat',
     auth(USER_ROLE.storeOwner, USER_ROLE.superAdmin),
     validateRequest(normalUserValidations.createNormalUserValidationSchema),
-    NormalUserController.createUser
+    NormalUserController.startChat
 );
 router.get(
     '/get-all-users',

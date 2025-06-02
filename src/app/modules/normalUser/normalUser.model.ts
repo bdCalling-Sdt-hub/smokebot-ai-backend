@@ -24,4 +24,8 @@ const NormalUserSchema = new mongoose.Schema<INormalUser>({
     },
 });
 
+NormalUserSchema.index({ store: 1, email: 1 }, { unique: true });
+
+NormalUserSchema.index({ store: 1, phone: 1 }, { unique: true });
+
 export const NormalUser = mongoose.model('NormalUser', NormalUserSchema);

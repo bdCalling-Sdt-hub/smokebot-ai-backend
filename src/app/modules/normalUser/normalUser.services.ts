@@ -6,7 +6,13 @@ import { NormalUser } from './normalUser.model';
 import { JwtPayload } from 'jsonwebtoken';
 import { USER_ROLE } from '../user/user.constant';
 
-const createUser = async (storeId: string, payload: INormalUser) => {
+const startChat = async (storeId: string, payload: INormalUser) => {
+    if (!payload.name) {
+        const isUserExist = await NormalUser.findOne({ phone: payload.phone });
+        if (!isUserExist) {
+            throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+        }
+    }
     const result = await NormalUser.create({ ...payload, store: storeId });
     return result;
 };
@@ -79,7 +85,7 @@ const deleteUser = async (storeId: string, id: string) => {
 };
 
 const NormalUserService = {
-    createUser,
+    startChat,
     getAllUser,
     getMyUsers,
     deleteUser,

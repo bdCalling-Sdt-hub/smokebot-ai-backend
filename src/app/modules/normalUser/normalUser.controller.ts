@@ -4,8 +4,8 @@ import catchAsync from '../../utilities/catchasync';
 import sendResponse from '../../utilities/sendResponse';
 import NormalUserServices from './normalUser.services';
 
-const createUser = catchAsync(async (req, res) => {
-    const result = await NormalUserServices.createUser(
+const startChat = catchAsync(async (req, res) => {
+    const result = await NormalUserServices.startChat(
         req.user.profileId,
         req.body
     );
@@ -54,7 +54,7 @@ const deleteUser = catchAsync(async (req, res) => {
 });
 
 const NormalUserController = {
-    createUser,
+    startChat,
     getAllUser,
     deleteUser,
     getMyUsers,
