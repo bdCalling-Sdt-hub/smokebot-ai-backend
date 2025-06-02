@@ -17,6 +17,7 @@ const storeSchema = new Schema<IStore>(
         subscriptionExpiryDate: {
             type: Date,
         },
+        //
         trialStartDate: {
             type: Date,
         },
