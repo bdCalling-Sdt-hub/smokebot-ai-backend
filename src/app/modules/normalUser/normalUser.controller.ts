@@ -13,7 +13,7 @@ const startChat = catchAsync(async (req, res) => {
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: 'User created successfully',
+        message: 'User chat started successfully',
         data: result,
     });
 });

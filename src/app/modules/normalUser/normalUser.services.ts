@@ -5,6 +5,7 @@ import { INormalUser } from './normalUser.interface';
 import { NormalUser } from './normalUser.model';
 import { JwtPayload } from 'jsonwebtoken';
 import { USER_ROLE } from '../user/user.constant';
+import mongoose from 'mongoose';
 
 const startChat = async (storeId: string, payload: INormalUser) => {
     if (!payload.name) {
@@ -12,6 +13,17 @@ const startChat = async (storeId: string, payload: INormalUser) => {
         if (!isUserExist) {
             throw new AppError(httpStatus.NOT_FOUND, 'User not found');
         }
+        const id = new mongoose.Types.ObjectId(storeId);
+        if (isUserExist.store != id) {
+            const result = await NormalUser.create({
+                store: storeId,
+                name: isUserExist.name,
+                email: isUserExist.email,
+                phone: payload.phone,
+            });
+            return result;
+        }
+        return isUserExist;
     }
     const result = await NormalUser.create({ ...payload, store: storeId });
     return result;

@@ -193,7 +193,13 @@ const getMyProfile = async (userData: JwtPayload) => {
     } else if (userData.role === USER_ROLE.admin) {
         result = await Admin.findById(userData.profileId);
     } else if (userData.role == USER_ROLE.storeOwner) {
-        result = await Store.findById(userData.profileId);
+        const res = await Store.findById(userData.profileId).lean();
+        if (res?.subscriptionPurchaseDate) {
+            res.packageType = 'Premium';
+        } else if (res?.trialStartDate) {
+            res.packageType = 'Trial';
+        }
+        result = res;
     }
     return result;
 };

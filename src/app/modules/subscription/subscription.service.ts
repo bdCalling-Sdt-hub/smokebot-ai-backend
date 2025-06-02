@@ -88,6 +88,9 @@ const continueWithTrail = async (profileId: string) => {
             'You already take trial , now you need to purchase subscription'
         );
     }
+    if (store?.subscriptionPurchaseDate) {
+        throw new AppError(httpStatus.NOT_FOUND, 'You trial is not avaiable');
+    }
     const currentDate = new Date();
     const fiveDaysLater = new Date();
     fiveDaysLater.setDate(currentDate.getDate() + 5);

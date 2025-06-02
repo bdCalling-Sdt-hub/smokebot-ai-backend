@@ -11,4 +11,5 @@ export interface IStore {
     subscriptionExpiryDate?: Date;
     trialStartDate: Date;
     trialEndDate: Date;
+    packageType: string;
 }
