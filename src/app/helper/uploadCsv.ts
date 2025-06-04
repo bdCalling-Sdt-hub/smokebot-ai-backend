@@ -45,21 +45,27 @@ const uploadCsvFile = async (req: Request, res: Response) => {
                         break;
                     }
                     console.log('row', row);
-                    const { name, isFeatured, category, price, quantity } = row;
-                    console.log(
-                        'kdjkdjfkdj',
+                    const {
                         name,
                         isFeatured,
                         category,
-                        price
-                    );
+                        price,
+                        quantity,
+                        flavour,
+                    } = row;
                     const payload = {
                         name,
                         isFeatured,
                         category,
                         price,
                         quantity,
+                        flavour,
                     };
+
+                    if (!name || !category) {
+                        continue;
+                    }
+
                     // if (isFeatured == 'true') {
                     //     payload.isFeatured = true;
                     // } else {

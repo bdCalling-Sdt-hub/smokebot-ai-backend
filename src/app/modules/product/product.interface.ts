@@ -7,4 +7,5 @@ export interface IProduct {
     quantity: number;
     isFeatured: boolean;
     store: Types.ObjectId;
+    flavour: string;
 }
