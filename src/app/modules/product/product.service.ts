@@ -17,7 +17,7 @@ const createProduct = async (storeId: string, payload: IProduct) => {
         isFeatured: true,
         store: storeId,
     });
-    if (totalFeaturedProduct >= 5) {
+    if (payload.isFeatured && totalFeaturedProduct >= 5) {
         throw new AppError(
             httpStatus.BAD_REQUEST,
             'You already added 5 featured product , if you want to add that as feature you need to make unfeatured a product first'
@@ -40,7 +40,7 @@ const updateProduct = async (
         isFeatured: true,
         store: storeId,
     });
-    if (totalFeaturedProduct >= 5) {
+    if (payload.isFeatured && totalFeaturedProduct >= 5) {
         throw new AppError(
             httpStatus.BAD_REQUEST,
             'You already added 5 featured product , if you want to add that as feature you need to make unfeatured a product first'

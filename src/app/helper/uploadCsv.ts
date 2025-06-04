@@ -44,7 +44,7 @@ const uploadCsvFile = async (req: Request, res: Response) => {
                     if (uploadCanceled) {
                         break;
                     }
-                    console.log('row', row);
+                    // console.log('row', row);
                     const {
                         name,
                         isFeatured,
