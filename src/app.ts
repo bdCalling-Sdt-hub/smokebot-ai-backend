@@ -19,7 +19,7 @@ import multer from 'multer';
 import handleWebhook from './stripe/webhook';
 const upload = multer({ dest: 'uploads/' });
 dotenv.config();
-
+import qs from 'qs';
 // web hook
 app.post(
     '/store/webhook',
@@ -142,6 +142,313 @@ app.get('/', (req, res) => {
     </body>
     </html>
   `);
+});
+
+// router.get('/connect-clover/:storeId', (req, res) => {
+//     const { storeId } = req.params;
+//     const redirectUri = encodeURIComponent(
+//         `http://10.0.60.137:5050/api/clover/oauth/callback`
+//     );
+
+//     console.log('redirected url', redirectUri);
+//     const url = `https://sandbox.dev.clover.com/oauth/authorize?client_id=${process.env.CLOVER_CLIENT_ID}&response_type=code&state=${storeId}&redirect_uri=${redirectUri}`;
+//     // res.redirect(url);
+//     res.send({ url: url });
+// });
+
+// router.get('/api/clover/oauth/callback', async (req, res) => {
+//     try {
+//         const { code, state } = req.query;
+
+//         if (!code || !state) {
+//             return res.status(400).send('Missing OAuth code or state');
+//         }
+
+//         const tokenUrl = 'https://sandbox.dev.clover.com/oauth/token';
+//         const redirectUri = 'http://10.0.60.137:5050/api/clover/oauth/callback';
+
+//         const body = qs.stringify({
+//             client_id: process.env.CLOVER_CLIENT_ID,
+//             client_secret: process.env.CLOVER_SECRET_KEY,
+//             code,
+//             redirect_uri: redirectUri,
+//         });
+
+//         const response: any = await axios.post(tokenUrl, body, {
+//             headers: {
+//                 'Content-Type': 'application/x-www-form-urlencoded',
+//             },
+//         });
+
+//         console.log('response', response);
+//         const { access_token } = response.data;
+//         console.log('Access Token:', access_token);
+
+//         // const merchantResponse = await axios.get(
+//         //     'https://apisandbox.dev.clover.com/v3/merchants/me',
+//         //     {
+//         //         headers: {
+//         //             Authorization: `Bearer ${access_token}`,
+//         //         },
+//         //     }
+//         // );
+
+//         // console.log('merchant res', merchantResponse);
+
+//         // const merchantId = merchantResponse.data.id;
+//         // console.log('Merchant ID:', merchantId);
+//         const response1 = await axios.get(
+//             'https://api.clover.com/v3/merchants/me',
+//             {
+//                 headers: {
+//                     Authorization: `Bearer ${access_token}`,
+//                 },
+//             }
+//         );
+
+//         console.log('rwesonse', response1);
+
+//         // If the response contains a single merchant object
+//         const merchantId = response.data.id;
+
+//         console.log(`Merchant ID: ${merchantId}`);
+
+//         await Store.findByIdAndUpdate(state, {
+//             clover: {
+//                 connected: true,
+//                 accessToken: access_token,
+//                 merchantId: merchantId,
+//                 lastSyncedAt: new Date(),
+//             },
+//         });
+
+//         res.send('Clover account connected successfully!');
+//     } catch (err) {
+//         console.error(
+//             'OAuth callback error:',
+//             err?.response?.data || err.message
+//         );
+//         res.status(400).send('Failed to connect Clover account.');
+//     }
+// });
+
+// router.get('/api/clover/oauth/callback', async (req, res) => {
+//     try {
+//         const { code, state } = req.query; // state = storeId
+
+//         if (!code || !state) {
+//             return res.status(400).send('Missing OAuth code or state');
+//         }
+
+//         console.log('CLIENT_ID:', process.env.CLOVER_CLIENT_ID);
+//         console.log('SECRET_KEY:', process.env.CLOVER_SECRET_KEY);
+
+//         const tokenUrl = 'https://sandbox.dev.clover.com/oauth/token';
+//         const redirectUri = 'http://10.0.60.137:5050/api/clover/oauth/callback';
+
+//         // Prepare x-www-form-urlencoded body
+//         const body = qs.stringify({
+//             client_id: process.env.CLOVER_CLIENT_ID,
+//             client_secret: process.env.CLOVER_SECRET_KEY,
+//             code,
+//             redirect_uri: redirectUri,
+//         });
+
+//         // Send request to exchange code for access_token
+//         const response = await axios.post(tokenUrl, body, {
+//             headers: {
+//                 'Content-Type': 'application/x-www-form-urlencoded',
+//             },
+//         });
+
+//         console.log('res', response);
+//         console.log('res2', response.data);
+//         const { access_token, merchant_id } = response.data;
+//         console.log('access token', access_token);
+//         const merchantResponse = await axios.get(
+//             'https://apisandbox.dev.clover.com/v3/merchants/me',
+//             {
+//                 headers: {
+//                     Authorization: `Bearer ${access_token}`,
+//                 },
+//             }
+//         );
+
+//         console.log('march respn', merchantResponse);
+
+//         const marchentId = merchantResponse.data.id;
+//         console.log('maedhfdh', marchentId);
+//         // Update store in MongoDB
+//         await Store.findByIdAndUpdate(state, {
+//             clover: {
+//                 connected: true,
+//                 accessToken: access_token,
+//                 merchantId: merchant_id,
+//                 lastSyncedAt: new Date(),
+//             },
+//         });
+
+//         console.log('Clover connected:', { merchant_id });
+
+//         // Optional: redirect to dashboard or UI
+//         res.send('Clover account connected successfully!');
+//     } catch (err) {
+//         console.error(
+//             'OAuth callback error:',
+//             err?.response?.data || err.message
+//         );
+//         res.status(400).send('Failed to connect Clover account.');
+//     }
+// });
+
+// router.get('/connect-clover/:storeId', (req, res) => {
+//     const { storeId } = req.params;
+
+//     // ✅ Use ngrok public URL
+//     const redirectUri =
+//         'https://0e0bddf6a0cd.ngrok-free.app/api/clover/oauth/callback';
+
+//     const url = `https://sandbox.dev.clover.com/oauth/authorize?client_id=${process.env.CLOVER_CLIENT_ID}&response_type=code&state=${storeId}&redirect_uri=${redirectUri}`;
+
+//     res.send({ url });
+// });
+
+router.get('/connect-clover/:storeId', (req, res) => {
+    const { storeId } = req.params;
+
+    const redirectUri =
+        'https://0e0bddf6a0cd.ngrok-free.app/api/clover/oauth/callback';
+
+    // The scopes you need, reflecting what your app is configured for.
+    // 'merchant_read' is crucial for /merchants/me
+    // 'inventory_read' or 'items_read' for items
+    // 'orders_read' for orders
+    // Use the specific scopes as documented by Clover for each permission
+    const scopes =
+        'merchant_read,inventory_read,orders_read,orders_write,inventory_write'; // Add all relevant scopes based on your app's "Requested Permissions"
+
+    const url = `https://sandbox.dev.clover.com/oauth/authorize?client_id=${process.env.CLOVER_CLIENT_ID}&response_type=code&state=${storeId}&redirect_uri=${redirectUri}&scope=${scopes}`;
+
+    res.send({ url });
+});
+
+router.get('/api/clover/oauth/callback', async (req, res) => {
+    try {
+        const { code, state } = req.query;
+
+        if (!code || !state) {
+            return res.status(400).send('Missing OAuth code or state');
+        }
+
+        const tokenUrl = 'https://sandbox.dev.clover.com/oauth/token';
+
+        // ✅ Use same public URL here
+        const redirectUri =
+            'https://0e0bddf6a0cd.ngrok-free.app/api/clover/oauth/callback';
+
+        const body = qs.stringify({
+            client_id: process.env.CLOVER_CLIENT_ID,
+            client_secret: process.env.CLOVER_SECRET_KEY,
+            code,
+            redirect_uri: redirectUri,
+        });
+
+        const response = await axios.post(tokenUrl, body, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        });
+
+        const { access_token } = response.data;
+        console.log('Access Token:', access_token);
+
+        // ✅ Use sandbox endpoint for /me
+        const merchantResponse = await axios.get(
+            'https://apisandbox.dev.clover.com/v3/merchants/me',
+            {
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                },
+            }
+        );
+
+        const merchantId = merchantResponse.data.id;
+        console.log(`Merchant ID: ${merchantId}`);
+
+        // ✅ Save in DB
+        await Store.findByIdAndUpdate(state, {
+            clover: {
+                connected: true,
+                accessToken: access_token,
+                merchantId: merchantId,
+                lastSyncedAt: new Date(),
+            },
+        });
+
+        res.send('Clover account connected successfully!');
+    } catch (err) {
+        console.error(
+            'OAuth callback error:',
+            err?.response?.data || err.message
+        );
+        res.status(400).send('Failed to connect Clover account.');
+    }
+});
+
+const syncCloverProducts = async (storeId: string) => {
+    const store = await Store.findById(storeId);
+    if (!store?.clover?.connected) return;
+
+    const { accessToken, merchantId } = store.clover;
+
+    const response = await axios.get(
+        `https://apisandbox.dev.clover.com/v3/merchants/${merchantId}/items`,
+        {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        }
+    );
+
+    console.log('respnse', response);
+
+    const cloverItems = response.data?.elements || [];
+
+    // Optional: Clear old products
+    await Product.deleteMany({ store: storeId });
+
+    // Map and save to your schema
+    for (const item of cloverItems) {
+        await Product.create({
+            store: storeId,
+            name: item.name,
+            category: item?.category?.name || 'General',
+            flavour: item?.flavour || '', // if you add custom fields
+            price: item.price / 100, // Clover returns price in cents
+            sku: item.sku || '',
+            isFeatured: false, // Default
+        });
+    }
+
+    store.clover.lastSyncedAt = new Date();
+    await store.save();
+};
+
+import cron from 'node-cron';
+import Store from './app/modules/store/store.model';
+import { Product } from './app/modules/product/product.model';
+import axios from 'axios';
+
+cron.schedule('0 * * * *', async () => {
+    const stores = await Store.find({ 'clover.connected': true });
+    for (const store of stores) {
+        try {
+            await syncCloverProducts(store._id.toString());
+            console.log(`Synced Clover for store: ${store.name}`);
+        } catch (err) {
+            console.error(`Failed to sync for ${store.name}`, err);
+        }
+    }
 });
 
 // global error handler

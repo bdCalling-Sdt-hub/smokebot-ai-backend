@@ -93,7 +93,7 @@ const continueWithTrail = async (profileId: string) => {
     }
     const currentDate = new Date();
     const fiveDaysLater = new Date();
-    fiveDaysLater.setDate(currentDate.getDate() + 5);
+    fiveDaysLater.setDate(currentDate.getDate() + 30);
 
     const result = await Store.findByIdAndUpdate(
         profileId,

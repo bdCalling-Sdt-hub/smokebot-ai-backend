@@ -12,4 +12,10 @@ export interface IStore {
     trialStartDate: Date;
     trialEndDate: Date;
     packageType: string;
+    clover: {
+        connected: boolean;
+        accessToken: string;
+        merchantId: string;
+        lastSyncedAt: Date;
+    };
 }

@@ -1,6 +1,21 @@
 import { model, Schema } from 'mongoose';
 import { IStore } from './store.interface';
 
+const cloverSchema = new Schema({
+    connected: {
+        Type: Boolean,
+    },
+    accessToken: {
+        Type: String,
+    },
+    merchantId: {
+        type: String,
+    },
+    lastSyncedAt: {
+        type: Date,
+    },
+});
+
 const storeSchema = new Schema<IStore>(
     {
         user: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
@@ -24,6 +39,7 @@ const storeSchema = new Schema<IStore>(
         trialEndDate: {
             type: Date,
         },
+        clover: cloverSchema,
     },
     { timestamps: true }
 );
