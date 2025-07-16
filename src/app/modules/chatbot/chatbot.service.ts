@@ -6,6 +6,7 @@ import httpStatus from 'http-status';
 import config from '../../config';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { Product } from '../product/product.model';
+import { textToSpeech } from '../../helper/textToSpeech';
 
 // const OPENAI_API_KEY = config.AI.open_ai_api_key;
 // const OPENAI_API_URL = config.AI.open_ai_url;
@@ -507,12 +508,15 @@ Rules:
         );
 
         const reply = response.data.choices[0].message;
+        const audioBuffer = await textToSpeech(reply.content);
+        const audioBase64 = audioBuffer.toString('base64');
         conversations[userId].messages.push(reply);
 
         const result = await Chat.create({
             user: userId,
             userMessage: userMessage,
             aiReply: reply.content,
+            audio: audioBase64,
         });
 
         return result;

@@ -1,7 +1,16 @@
+import httpStatus from 'http-status';
+import AppError from '../../error/appError';
 import catchAsync from '../../utilities/catchasync';
 import sendResponse from '../../utilities/sendResponse';
 import ChatBotService from './chatbot.service';
 const chat = catchAsync(async (req, res) => {
+    const audioBuffer = req.file?.buffer;
+    const filename = req.file?.originalname;
+
+    if (!audioBuffer || !filename) {
+        throw new AppError(httpStatus.BAD_REQUEST, 'No audio file provided');
+    }
+
     const result = await ChatBotService.chat(req.user.profileId, req.body);
 
     sendResponse(res, {
