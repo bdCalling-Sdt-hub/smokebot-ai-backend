@@ -406,6 +406,7 @@ const chat = async (
         message: string;
     }
 ) => {
+    
     const { userId, message: userMessage } = payload;
 
     if (!conversations[userId]) {

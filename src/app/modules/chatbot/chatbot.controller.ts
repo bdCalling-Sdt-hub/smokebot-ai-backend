@@ -3,6 +3,7 @@ import AppError from '../../error/appError';
 import catchAsync from '../../utilities/catchasync';
 import sendResponse from '../../utilities/sendResponse';
 import ChatBotService from './chatbot.service';
+import { speechToText } from '../../helper/spaceToText';
 const chat = catchAsync(async (req, res) => {
     const audioBuffer = req.file?.buffer;
     const filename = req.file?.originalname;
@@ -10,6 +11,10 @@ const chat = catchAsync(async (req, res) => {
     if (!audioBuffer || !filename) {
         throw new AppError(httpStatus.BAD_REQUEST, 'No audio file provided');
     }
+
+    const text = await speechToText(audioBuffer,filename);
+    req.body.message = text;
+
 
     const result = await ChatBotService.chat(req.user.profileId, req.body);
 
