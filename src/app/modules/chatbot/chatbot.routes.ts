@@ -9,13 +9,13 @@ const router = express.Router();
 router.post(
     '/chat',
     auth(USER_ROLE.storeOwner),
-    audioUpload,
-    (req: Request, res: Response, next: NextFunction) => {
-        if (req.body.data) {
-            req.body = JSON.parse(req.body.data);
-        }
-        next();
-    },
+    // audioUpload,
+    // (req: Request, res: Response, next: NextFunction) => {
+    //     if (req.body.data) {
+    //         req.body = JSON.parse(req.body.data);
+    //     }
+    //     next();
+    // },
     ChatController.chat
 );
 router.get('/get-user-chat', ChatController.getChatForUser);

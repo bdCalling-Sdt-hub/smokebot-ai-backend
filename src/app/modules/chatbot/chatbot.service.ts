@@ -406,7 +406,7 @@ const chat = async (
         message: string;
     }
 ) => {
-    
+
     const { userId, message: userMessage } = payload;
 
     if (!conversations[userId]) {
@@ -509,15 +509,15 @@ Rules:
         );
 
         const reply = response.data.choices[0].message;
-        const audioBuffer = await textToSpeech(reply.content);
-        const audioBase64 = audioBuffer.toString('base64');
+        // const audioBuffer = await textToSpeech(reply.content);
+        // const audioBase64 = audioBuffer.toString('base64');
         conversations[userId].messages.push(reply);
 
         const result = await Chat.create({
             user: userId,
             userMessage: userMessage,
             aiReply: reply.content,
-            audio: audioBase64,
+            // audio: audioBase64,
         });
 
         return result;
