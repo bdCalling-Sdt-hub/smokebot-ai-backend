@@ -52,6 +52,7 @@ app.use(
             'https://10.0.60.187:4173',
             'http://10.0.60.137:5030',
             'https://10.0.60.187:4173',
+            'https://h6wlql5g-5173.inc1.devtunnels.ms',
         ],
         credentials: true,
     })
