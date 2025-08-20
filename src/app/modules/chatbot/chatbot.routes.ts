@@ -1,8 +1,7 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
 import ChatController from './chatbot.controller';
 import auth from '../../middlewares/auth';
 import { USER_ROLE } from '../user/user.constant';
-import { audioUpload } from '../../middlewares/uploadMiddleware';
 
 const router = express.Router();
 

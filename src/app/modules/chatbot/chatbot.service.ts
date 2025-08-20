@@ -6,6 +6,7 @@ import httpStatus from 'http-status';
 import config from '../../config';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { Product } from '../product/product.model';
+import { textToSpeech } from '../../helper/textToSpeech';
 // import { textToSpeech } from '../../helper/textToSpeech';
 
 // const OPENAI_API_KEY = config.AI.open_ai_api_key;
@@ -508,19 +509,22 @@ Rules:
         );
 
         const reply = response.data.choices[0].message;
-        // const audioBuffer = await textToSpeech(reply.content);
-        // const audioBase64 = audioBuffer.toString('base64');
-        // console.log('Audio generated successfully', audioBase64);
+        const audioBuffer = await textToSpeech(reply.content);
+        const audioBase64 = audioBuffer.toString('base64');
         conversations[userId].messages.push(reply);
 
-        const result = await Chat.create({
+        Chat.create({
             user: userId,
             userMessage: userMessage,
             aiReply: reply.content,
-            // audio: audioBase64,
         });
 
-        return result;
+        return {
+            user: userId,
+            userMessage: userMessage,
+            aiReply: reply.content,
+            audio: audioBase64,
+        };
     } catch (error: any) {
         console.error(error.response?.data || error.message);
         throw new AppError(

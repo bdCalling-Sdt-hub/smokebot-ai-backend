@@ -22,6 +22,7 @@ export const textToSpeech = async (
             OutputFormat: 'mp3',
             VoiceId: voiceId,
             Engine: 'neural',
+            // Engine: 'standard',
             LanguageCode: 'en-US',
             TextType: 'text',
         };
