@@ -8,7 +8,7 @@ import config from './app/config';
 import seedSuperAdmin from './app/DB';
 
 let myServer: HTTPServer | undefined;
-
+//
 async function main() {
     try {
         await mongoose.connect(config.database_url as string);
